@@ -1,2 +1,2 @@
 # CSS452FinalProject
-Made by Nikhil Alapati, Gabriel O, Sukeerth V
+Made by Nikhil Alapati, Gabriel Oliver, Sukeerth Vegaraju
