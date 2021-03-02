@@ -48,6 +48,9 @@ function MyGame() {
     
     // shadow support
     this.mBgShadow1 = null;
+    
+    // Gabe: testing VolumeNode object
+    this.testVolumeNode = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -72,6 +75,15 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
+    // Gabe: testing VolumeNode object
+    this.testVNRenderable = new Renderable();
+    this.testVNRenderable.setColor([1, 0, 0, 1]);
+    this.testVNRenderable.getXform().setSize(5, 5);
+    this.testVNRenderable.getXform().setPosition(30, 50);
+    
+    this.testVNGameObject = new GameObject(this.testVNRenderable);
+    this.testVolumeNode = new VolumeNode(this.testVNGameObject);
+    
     // Step A: set up the cameras
     this.mParallaxCam = new Camera(
         vec2.fromValues(25, 40), // position of the camera
@@ -166,20 +178,25 @@ MyGame.prototype.initialize = function () {
     this._setupShadow();  // defined in MyGame_Shadow.js
     
     // add to layer managers ...
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBg);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eShadowReceiver, this.mBgShadow1);
-    
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumMinion);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtMinion);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumHero);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtHero);
-    
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlock1);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlock2);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFront);
-    
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMsg);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMatMsg);
+    // 
+    // Gabe: commented out adding GOs to layers for a clear canvas
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eBackground, this.mBg);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eShadowReceiver, this.mBgShadow1);
+//    
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumMinion);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtMinion);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumHero);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtHero);
+//    
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlock1);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlock2);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mFront);
+//    
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMsg);
+//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMatMsg);
+
+// Gabe: testing VolumeNode object being added to layer to be drawn
+gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testVolumeNode);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
