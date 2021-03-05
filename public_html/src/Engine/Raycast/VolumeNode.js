@@ -10,6 +10,28 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 function VolumeNode(renderable) {
     this.mGameObject = new GameObject(renderable);
 }
@@ -44,3 +66,4 @@ VolumeNode.prototype.getPhysicsComponent = function () { return this.mGameObject
 VolumeNode.prototype.rotateObjPointTo = function (p, rate) {
     this.mGameObject.rotateObjPointTo(p, rate);
 };
+ */

@@ -51,6 +51,7 @@ function MyGame() {
     
     // Gabe: testing VolumeNode object
     this.testVolumeNode = null;
+    this.testBoundingRaycastBox = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -82,7 +83,8 @@ MyGame.prototype.initialize = function () {
     this.testVNRenderable.getXform().setPosition(30, 50);
     
     this.testVNGameObject = new GameObject(this.testVNRenderable);
-    this.testVolumeNode = new VolumeNode(this.testVNGameObject);
+    //this.testVolumeNode = new VolumeNode(this.testVNGameObject);
+    this.testBoundingRaycastBox = new BoundingRaycastBox([50, 37.5], 3, 3);
     
     // Step A: set up the cameras
     this.mParallaxCam = new Camera(
@@ -196,7 +198,8 @@ MyGame.prototype.initialize = function () {
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMatMsg);
 
 // Gabe: testing VolumeNode object being added to layer to be drawn
-gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testVolumeNode);
+//gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testVolumeNode);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -242,6 +245,9 @@ MyGame.prototype.update = function () {
     msg += this.materialControl();
     this.mMatMsg.setText(msg);
 
+    // Gabe: debugging boundingracastbox position
+    console.log("bounding Center: " + this.testBoundingRaycastBox.getXform().getPosition());
+    console.log("cam Center: " + this.mCamera.getWCCenter());
 };
 
 MyGame.prototype._selectCharacter = function () {
