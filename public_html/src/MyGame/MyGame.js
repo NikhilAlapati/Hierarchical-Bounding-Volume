@@ -50,7 +50,7 @@ function MyGame() {
     this.mBgShadow1 = null;
     
     // Gabe: testing VolumeNode object
-    this.testVolumeNode = null;
+    this.testBoundingRaycastBox2 = null;
     this.testBoundingRaycastBox = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -77,23 +77,17 @@ MyGame.prototype.unloadScene = function () {
 
 MyGame.prototype.initialize = function () {
     // Gabe: testing VolumeNode object
-    this.testVNRenderable = new Renderable();
-    this.testVNRenderable.setColor([1, 0, 0, 1]);
-    this.testVNRenderable.getXform().setSize(5, 5);
-    this.testVNRenderable.getXform().setPosition(30, 50);
-    
-    this.testVNGameObject = new GameObject(this.testVNRenderable);
-    //this.testVolumeNode = new VolumeNode(this.testVNGameObject);
-    this.testBoundingRaycastBox = new BoundingRaycastBox([50, 37.5], 3, 3);
+    this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
+    this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
     
     // Step A: set up the cameras
-    this.mParallaxCam = new Camera(
-        vec2.fromValues(25, 40), // position of the camera
-        30,                       // width of camera
-        [0, 420, 700, 300],           // viewport (orgX, orgY, width, height)
-        2
-    );
-    this.mParallaxCam.setBackgroundColor([0.5, 0.5, 0.9, 1]);
+//    this.mParallaxCam = new Camera(
+//        vec2.fromValues(25, 40), // position of the camera
+//        30,                       // width of camera
+//        [0, 420, 700, 300],           // viewport (orgX, orgY, width, height)
+//        2
+//    );
+//    this.mParallaxCam.setBackgroundColor([0.5, 0.5, 0.9, 1]);
     
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
@@ -200,6 +194,7 @@ MyGame.prototype.initialize = function () {
 // Gabe: testing VolumeNode object being added to layer to be drawn
 //gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testVolumeNode);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -211,17 +206,17 @@ MyGame.prototype.draw = function () {
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
 
-    if (this.mShowHeroCam) {
-        this.mParallaxCam.setupViewProjection();
-        gEngine.LayerManager.drawAllLayers(this.mParallaxCam);
-    }
+//    if (this.mShowHeroCam) {
+//        this.mParallaxCam.setupViewProjection();
+//        gEngine.LayerManager.drawAllLayers(this.mParallaxCam);
+//    }
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function () {
     this.mCamera.update();  // to ensure proper interpolated movement effects
-    this.mParallaxCam.update();
+    //this.mParallaxCam.update();
 
     gEngine.LayerManager.updateAllLayers();
     
@@ -246,8 +241,8 @@ MyGame.prototype.update = function () {
     this.mMatMsg.setText(msg);
 
     // Gabe: debugging boundingracastbox position
-    console.log("bounding Center: " + this.testBoundingRaycastBox.getXform().getPosition());
-    console.log("cam Center: " + this.mCamera.getWCCenter());
+    //console.log("bounding Center: " + this.testBoundingRaycastBox.getXform().getPosition());
+    //console.log("cam Center: " + this.mCamera.getWCCenter());
 };
 
 MyGame.prototype._selectCharacter = function () {
