@@ -52,6 +52,9 @@ function MyGame() {
     // Gabe: testing VolumeNode object
     this.testBoundingRaycastBox2 = null;
     this.testBoundingRaycastBox = null;
+    
+    // Gabe: testing Raycasts object
+    this.testRaycast = null;
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -76,9 +79,8 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
-    // Gabe: testing VolumeNode object
-    this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
-    this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
+    
+    
     
     // Step A: set up the cameras
 //    this.mParallaxCam = new Camera(
@@ -173,6 +175,15 @@ MyGame.prototype.initialize = function () {
     
     this._setupShadow();  // defined in MyGame_Shadow.js
     
+    
+    // Gabe: testing VolumeNode object
+    this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
+    this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
+    // Gabe: testing Raycast object
+    this.testRaycast = new Raycast([30, 40], [50, 37.5]);
+    
+    
+    
     // add to layer managers ...
     // 
     // Gabe: commented out adding GOs to layers for a clear canvas
@@ -181,7 +192,7 @@ MyGame.prototype.initialize = function () {
 //    
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumMinion);
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtMinion);
-//    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumHero);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mIllumHero);
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.mLgtHero);
 //    
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eFront, this.mBlock1);
@@ -191,10 +202,10 @@ MyGame.prototype.initialize = function () {
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMsg);
 //    gEngine.LayerManager.addToLayer(gEngine.eLayer.eHUD, this.mMatMsg);
 
-// Gabe: testing VolumeNode object being added to layer to be drawn
-//gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testVolumeNode);
+    // Gabe: testing VolumeNode object being added to layer to be drawn
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testRaycast);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -240,9 +251,9 @@ MyGame.prototype.update = function () {
     msg += this.materialControl();
     this.mMatMsg.setText(msg);
 
-    // Gabe: debugging boundingracastbox position
-    //console.log("bounding Center: " + this.testBoundingRaycastBox.getXform().getPosition());
-    //console.log("cam Center: " + this.mCamera.getWCCenter());
+    // Gabe: debugging
+    //console.log("raycast: " + this.testRaycast.getStartPoint() + ", " + this.testRaycast.getEndPoint());
+    this.testRaycast.setStartPoint(this.mIllumHero.getXform().getPosition());
 };
 
 MyGame.prototype._selectCharacter = function () {
