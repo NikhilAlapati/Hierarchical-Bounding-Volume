@@ -14,11 +14,15 @@ gEngine.Core.inheritPrototype(Raycast, LineRenderable);
 
 Raycast.prototype.getStartPoint = function () { return this.startPoint; };
 Raycast.prototype.getEndPoint = function () { return this.endPoint; };
+
 Raycast.prototype.setStartPoint = function (newPoint) { 
     this.startPoint = newPoint;
     this.myLineRenderable.setFirstVertex(this.startPoint[0], this.startPoint[1]);
 };
-Raycast.prototype.setEndPoint = function (newPoint) {this.endPoint = newPoint; };
+Raycast.prototype.setEndPoint = function (newPoint) {
+    this.startPoint = newPoint;
+    this.myLineRenderable.setFirstVertex(this.endPoint[0], this.endPoint[1]);
+};
 
 Raycast.prototype.draw = function (aCamera) { this.myLineRenderable.draw(aCamera); };
 

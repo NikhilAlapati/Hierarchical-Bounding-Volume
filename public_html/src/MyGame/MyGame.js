@@ -55,6 +55,9 @@ function MyGame() {
     
     // Gabe: testing Raycasts object
     this.testRaycast = null;
+    
+    // Gabe: testing GO storage for detecting raycast interception
+    this.testGOArray = [];
 }
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
@@ -180,8 +183,8 @@ MyGame.prototype.initialize = function () {
     this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
     this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
     // Gabe: testing Raycast object
-    this.testRaycast = new Raycast([30, 40], [50, 37.5]);
-    
+    this.testRaycast = new Raycast([40, 30], [50, 37.5]);
+    this.testGOArray = [this.testBoundingRaycastBox, this.testBoundingRaycastBox2];
     
     
     // add to layer managers ...
