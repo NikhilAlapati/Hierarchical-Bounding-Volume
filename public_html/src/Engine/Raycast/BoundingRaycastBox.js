@@ -7,12 +7,22 @@
 function BoundingRaycastBox(centerPos, w, h) {
     this.kSpriteSheetTexture = "assets/minion_sprite.png";
     this.boundRend = new Renderable(this.kSpriteSheetTexture);
-    this.boundRend.getXform().setSize(7.5, 7.5);
-    this.boundRend.getXform().setPosition(centerPos[0], centerPos[1]);
+    let xform = this.boundRend.getXform();
+    xform.setSize(7.5, 7.5);
+    xform.setPosition(centerPos[0], centerPos[1]);
     this.boundRend.setColor([1, 1, 1, 1]);
+    let position = xform.getPosition();
+    let size = xform.getSize();
+    let halfWidth = size[0] / 2;
+    let halfHeight = size[1] / 2;
+    this.corners = [
+        [position[0] - halfWidth, position[1] + halfHeight],// T left
+        [(position[0] + halfWidth), position[0] + halfHeight],// T right
+        [position[0] - halfWidth, position[1] - halfHeight],// B left
+        [position[0] + halfWidth, position[1] - halfHeight]];// B right
     //this.boundRend.setElementUVCoordinate(0.15, 0.3, 0, 0.4);
     this.myGameObject = new GameObject(this.boundRend);
-    
+
     this.myBoundingBox = new BoundingBox(centerPos, w, h);
 }
 
@@ -30,3 +40,23 @@ BoundingRaycastBox.prototype.getXform = function () {
     return this.myGameObject.getXform();
 };
 
+BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
+    let line = raycast.getLine();
+    let cornerTracker = [];
+
+    for (let i = 0; i < this.corners.length; i++) {
+        if (line[0] * this.corners[i][0] + line[1] > this.corners[i][1]) {
+            cornerTracker.push(0);
+        } else if (line[0] * this.corners[i][0] + line[1] < this.corners[i][1]) {
+            cornerTracker.push(1);
+        } else {
+            return true;
+        }
+    }
+    for (let i = 0; i < cornerTracker.length - 1; i++) {
+        if (cornerTracker[i] !== cornerTracker[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+};

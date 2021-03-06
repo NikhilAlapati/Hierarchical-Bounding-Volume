@@ -1,5 +1,5 @@
 /*
- * File: MyGame.js 
+ * File: MyGame.js
  * This is the logic of our game. 
  */
 
@@ -23,7 +23,7 @@ function MyGame() {
     this.mCamera = null;
     this.mParallaxCam = null;
     this.mShowHeroCam = false;
-    
+
     this.mBg = null;
     this.mBgL1 = null;
     this.mFront = null;
@@ -45,20 +45,21 @@ function MyGame() {
 
     this.mLgtIndex = 0;
     this.mLgtRotateTheta = 0;
-    
+
     // shadow support
     this.mBgShadow1 = null;
-    
+
     // Gabe: testing VolumeNode object
     this.testBoundingRaycastBox2 = null;
     this.testBoundingRaycastBox = null;
-    
+
     // Gabe: testing Raycasts object
     this.testRaycast = null;
-    
+
     // Gabe: testing GO storage for detecting raycast interception
     this.testGOArray = [];
 }
+
 gEngine.Core.inheritPrototype(MyGame, Scene);
 
 MyGame.prototype.loadScene = function () {
@@ -72,7 +73,7 @@ MyGame.prototype.loadScene = function () {
 
 MyGame.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
-    
+
     gEngine.Textures.unloadTexture(this.kMinionSprite);
     gEngine.Textures.unloadTexture(this.kBg);
     gEngine.Textures.unloadTexture(this.kBgNormal);
@@ -82,9 +83,8 @@ MyGame.prototype.unloadScene = function () {
 };
 
 MyGame.prototype.initialize = function () {
-    
-    
-    
+
+
     // Step A: set up the cameras
 //    this.mParallaxCam = new Camera(
 //        vec2.fromValues(25, 40), // position of the camera
@@ -93,18 +93,18 @@ MyGame.prototype.initialize = function () {
 //        2
 //    );
 //    this.mParallaxCam.setBackgroundColor([0.5, 0.5, 0.9, 1]);
-    
+
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
         100,                       // width of camera
         [0, 0, 1280, 720]           // viewport (orgX, orgY, width, height)
     );
     this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
-            // sets the background to gray
-    
+    // sets the background to gray
+
     // Step B: the lights
     this._initializeLights();   // defined in MyGame_Lights.js
- 
+
     // Step C: the far Background
     var bgR = new IllumRenderable(this.kBg, this.kBgNormal);
     bgR.setElementPixelPositions(0, 1024, 0, 1024);
@@ -117,13 +117,13 @@ MyGame.prototype.initialize = function () {
     this.mBg = new ParallaxGameObject(bgR, 5, this.mCamera);
     this.mBg.setCurrentFrontDir([0, -1, 0]);
     this.mBg.setSpeed(0.1);
-    
+
     // Step D: the closer Background
-    var i; 
+    var i;
     var bgR1 = new IllumRenderable(this.kBgLayer, this.kBgLayerNormal);
     bgR1.getXform().setSize(25, 25);
     bgR1.getXform().setPosition(0, 0);
-    bgR1.getXform().setZPos(0); 
+    bgR1.getXform().setZPos(0);
     bgR1.addLight(this.mGlobalLightSet.getLightAt(1));   // the directional light
     bgR1.addLight(this.mGlobalLightSet.getLightAt(2));   // the hero spotlight light
     bgR1.addLight(this.mGlobalLightSet.getLightAt(3));   // the hero spotlight light
@@ -132,13 +132,13 @@ MyGame.prototype.initialize = function () {
     this.mBgL1 = new ParallaxGameObject(bgR1, 3, this.mCamera);
     this.mBgL1.setCurrentFrontDir([0, -1, 0]);
     this.mBgL1.setSpeed(0.1);
-    
+
     // Step E: the front layer 
     var f = new TextureRenderable(this.kBgLayer);
     f.getXform().setSize(30, 30);
     f.getXform().setPosition(0, 0);
     this.mFront = new ParallaxGameObject(f, 0.9, this.mCamera);
-    
+
     // 
     // the objects
     this.mIllumHero = new Hero(this.kMinionSprite, this.kMinionSpriteNormal, 40, 30);
@@ -175,18 +175,18 @@ MyGame.prototype.initialize = function () {
     this.mSlectedCh = this.mIllumHero;
     this.mMaterialCh = this.mSlectedCh.getRenderable().getMaterial().getDiffuse();
     this.mSelectedChMsg = "H:";
-    
+
     this._setupShadow();  // defined in MyGame_Shadow.js
-    
-    
+
+
     // Gabe: testing VolumeNode object
     this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
     this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
     // Gabe: testing Raycast object
     this.testRaycast = new Raycast([40, 30], [50, 37.5]);
     this.testGOArray = [this.testBoundingRaycastBox, this.testBoundingRaycastBox2];
-    
-    
+
+
     // add to layer managers ...
     // 
     // Gabe: commented out adding GOs to layers for a clear canvas
@@ -216,7 +216,7 @@ MyGame.prototype.initialize = function () {
 MyGame.prototype.draw = function () {
     // Step A: clear the canvas
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
-    
+
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
 
@@ -233,18 +233,18 @@ MyGame.prototype.update = function () {
     //this.mParallaxCam.update();
 
     gEngine.LayerManager.updateAllLayers();
-    
+
     var xf = this.mLgtHero.getXform();
     this.mCamera.panWith(xf, 0.2);
     this.mGlobalLightSet.getLightAt(3).set2DPosition(xf.getPosition());
-    
+
     xf = this.mIllumHero.getXform();
     this.mGlobalLightSet.getLightAt(2).set2DPosition(xf.getPosition());
-        
-     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
-         this.mShowHeroCam = !this.mShowHeroCam;
-     }
-    
+
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
+        this.mShowHeroCam = !this.mShowHeroCam;
+    }
+
     // control the selected light
     var msg = "L=" + this.mLgtIndex + " ";
     msg += this._lightControl();
@@ -253,9 +253,11 @@ MyGame.prototype.update = function () {
     msg = this._selectCharacter();
     msg += this.materialControl();
     this.mMatMsg.setText(msg);
-
     // Gabe: debugging
     //console.log("raycast: " + this.testRaycast.getStartPoint() + ", " + this.testRaycast.getEndPoint());
+    this.testRaycast.update();
+    console.log("testbox 1:" + this.testBoundingRaycastBox.checkIntersection(this.testRaycast));
+    console.log("testbox 2:" + this.testBoundingRaycastBox2.checkIntersection(this.testRaycast));
     this.testRaycast.setStartPoint(this.mIllumHero.getXform().getPosition());
 };
 
