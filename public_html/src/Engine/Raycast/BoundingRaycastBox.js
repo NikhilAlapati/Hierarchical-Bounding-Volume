@@ -59,4 +59,4 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
         }
     }
     return true;
-};
+}; 
