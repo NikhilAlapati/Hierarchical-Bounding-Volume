@@ -26,36 +26,71 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
     //    with more than 3 objects, but the area of the volume is
     //    <INSERT ARBITRARY SMALL AREA SIZE>.
 
-    if (objectsArray.length > 3) {
-        var distanceX = 0;
-        var distanceY = 0;
-        var averageWCPosition = [];
+    // Create 1 volume that covers all the gameobjects
+    // Check the rules listed above
+    // if rules fail, create new volume nodes to add to the BVH
+    // keep creating nodes until each node satisfies the rules above
 
-        for (var i = 0; i < objectsArray.length - 1; i += 2) {
-            obj1Pos = objectsArray[i].getXform().getWCPosition;
-            distanceX += Math.abs(obj1Pos[0]);
-            distanceY += Math.abs(obj1Pos[1]);
+    // create 1 node that covers all gameobjects
+    // first check the positions of all gameobjects to determine the size and location
+    this.insertNode(new BoundingRaycastBox([40, 50], 4, 4));
 
-            obj2Pos = objectsArray[i + 1].getXform().getWCPosition;
-            distanceX += Math.abs(obj2Pos[0]);
-            distanceY += Math.abs(obj2Pos[1]);
-
-            averageWCPosition[0] += ((obj1Pos[0] + obj2Pos[0]) / 2);
-            averageWCPosition[1] += ((obj1Pos[1] + obj2Pos[1]) / 2);
-        }
-
-        this.constructHierarchyHelper();
-
-    } else {
-        // build one volume that covers all of them
-    }
+    this.constructHierarchyHelper(objectsArray, this.headNode);
 };
 
 // Gabe: helper methods to look at all boundaries and create more accordingly
-HierarchicalVolumeManager.prototype.constructHierarchyHelper = function () {
+HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
+    // now see if there are more than three in the box, but the volume isnt too small
+    if (objectsArray.length > 3) {
+        this.findNewNodePosition(objectsArray, node);
+        var averageWCPosition = this.findNewNodePosition(objectsArray, node);
+        
+    }
+};
+
+// Gabe: find position of a new node based on the GO in its zone
+HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray, node) {
+    var distanceX = 0;
+    var distanceY = 0;
+    var cumulativeWCPosition = [0, 0];
+    for (var i = 0; i < objectsArray.length; i++) {
+        var objPos = objectsArray[i].getXform().getWCPosition();
+        var xPos = objPos[0];
+        var yPos = objPos[1]
+        distanceX += Math.abs(xPos);
+        distanceY += Math.abs(yPos);
+        cumulativeWCPosition[0] += xPos;
+        cumulativeWCPosition[1] += yPos;
+    }
+    var averageWCPosition = [0, 0];
+    averageWCPosition[0] = cumulativeWCPosition[0] / objectsArray.length;
+    averageWCPosition[1] = cumulativeWCPosition[1] / objectsArray.length;
+    if (node !== this.headNode) {
+        if (this.previousSplitWasVirtical === null) {
+            this.previousSplitWasVirtical = this.determineSplitDirection(distanceX, distanceY);
+        } else if (this.previousSplitWasVirtical) {
+            this.previousSplitWasVirtical = false;
+        } else {
+            this.previousSplitWasVirtical = true;
+        }
+    }
+    return averageWCPosition;
+};
+
+// return true of the split is vertical, return false if the split is horizontal
+HierarchicalVolumeManager.prototype.determineSplitDirection = function (distanceX, distanceY) {
+    if (distanceX >= distanceY) {
+        return true
+    }
+    return false;
+};
+
+// find the size to fit the objects inside of the volume node
+HierarchicalVolumeManager.prototype.findNewNodeSize = function () {
 
 };
 
+// to insert nodes into the BVH
 HierarchicalVolumeManager.prototype.insertNode = function (node) {
     if (this.headNode === null) {
         this.headNode = node;
@@ -65,6 +100,7 @@ HierarchicalVolumeManager.prototype.insertNode = function (node) {
     }
 };
 
+// insert nodes into the BVH helper function
 HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, node) {
 
 };
