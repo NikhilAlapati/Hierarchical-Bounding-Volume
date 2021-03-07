@@ -5,3 +5,20 @@
  */
 
 
+function HierarchicalVolumeManager() {
+    this.headNode = null;
+    this.hierarchyDepth = 0;
+}
+
+HierarchicalVolumeManager.prototype.insertNode = function (node) {
+    if (this.headNode === null) {
+        this.headNode = node;
+        this.hierarchyDepth++;
+    } else {
+        this.insertNodeHelper(this.headNode, node);
+    }
+};
+
+HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, node) {
+    
+};
