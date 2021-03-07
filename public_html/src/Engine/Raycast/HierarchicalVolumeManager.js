@@ -33,7 +33,7 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
 
     // create 1 node that covers all gameobjects
     // first check the positions of all gameobjects to determine the size and location
-    this.insertNode(new BoundingRaycastBox([40, 50], 4, 4));
+    this.insertNode(new BoundingRaycastBox([40, 50], 4, 4)); // INCOMPLETE, replace with helper functions
 
     this.constructHierarchyHelper(objectsArray, this.headNode);
 };
@@ -42,9 +42,21 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
 HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
     // now see if there are more than three in the box, but the volume isnt too small
     if (objectsArray.length > 3) {
-        this.findNewNodePosition(objectsArray, node);
-        var averageWCPosition = this.findNewNodePosition(objectsArray, node);
-        
+        var newNodePosition = this.findNewNodePosition(objectsArray, node);
+        var newNodeSize = this.findNewNodeSize();
+
+        var newNodeGOArray = [];
+        for (var i = 0; i < objectsArray.length; i++) {
+            if (this.previousSplitWasVirtical) {
+                if (objectsArray[i].getXform().getXPos() <= newNodePosition[0]) {
+                    // remove it from the objectsarray and put it in the newNodeGOArray
+                }
+            } else { // if (!this.previousSplitWasVertical)
+                if (objectsArray[i].getXform().getYPos() <= newNodePosition[1]) {
+                    // remove it from the objectsarray and put it in the newNodeGOArray
+                }
+            }
+        }
     }
 };
 

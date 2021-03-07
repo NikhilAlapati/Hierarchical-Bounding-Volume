@@ -25,8 +25,10 @@ function BoundingRaycastBox(centerPos, w, h) {
 
     this.myBoundingBox = new BoundingBox(centerPos, w, h);
 
+    // node properties
     this.leftChild = null;
     this.rightChild = null;
+    this.myGameObjectsArray = [];
 }
 
 gEngine.Core.inheritPrototype(BoundingRaycastBox, BoundingBox);
