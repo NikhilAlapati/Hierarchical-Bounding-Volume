@@ -45,19 +45,29 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         var newNodePosition = this.findNewNodePosition(objectsArray, node);
         var newNodeSize = this.findNewNodeSize();
 
-        var newNodeGOArray = [];
-        for (var i = 0; i < objectsArray.length; i++) {
-            if (this.previousSplitWasVirtical) {
-                if (objectsArray[i].getXform().getXPos() <= newNodePosition[0]) {
-                    // remove it from the objectsarray and put it in the newNodeGOArray
-                }
-            } else { // if (!this.previousSplitWasVertical)
-                if (objectsArray[i].getXform().getYPos() <= newNodePosition[1]) {
-                    // remove it from the objectsarray and put it in the newNodeGOArray
-                }
+        var newNodeGOArray = this.moveGOsToNewArray(objectsArray);
+    }
+};
+
+// move the GOs from the passed array to a new array for a new node
+HierarchicalVolumeManager.prototype.moveGOsToNewArray = function (objectsArray) {
+    var newNodeGOArray = [];
+    for (var i = 0; i < objectsArray.length; i++) {
+        if (this.previousSplitWasVirtical) {
+            if (objectsArray[i].getXform().getXPos() <= newNodePosition[0]) {
+                // remove it from the objectsarray and put it in the newNodeGOArray
+                newNodeGOArray.push(objectsArray[i]);
+                objectsArray.splice(i, 1);
+            }
+        } else { // if (!this.previousSplitWasVertical)
+            if (objectsArray[i].getXform().getYPos() <= newNodePosition[1]) {
+                // remove it from the objectsarray and put it in the newNodeGOArray
+                newNodeGOArray.push(objectsArray[i]);
+                objectsArray.splice(i, 1);
             }
         }
     }
+    return newNodeGOArray;
 };
 
 // Gabe: find position of a new node based on the GO in its zone
