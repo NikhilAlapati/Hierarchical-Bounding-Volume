@@ -60,3 +60,7 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
     }
     return true;
 }; 
+
+BoundingRaycastBox.prototype.getCorners = function () {
+    return this.corners;
+};

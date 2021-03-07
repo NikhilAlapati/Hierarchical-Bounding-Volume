@@ -58,6 +58,7 @@ function MyGame() {
 
     // Gabe: testing GO storage for detecting raycast interception
     this.testGOArray = [];
+    this.worldOrigin = null;
 }
 
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -185,7 +186,10 @@ MyGame.prototype.initialize = function () {
     // Gabe: testing Raycast object
     this.testRaycast = new Raycast([40, 30], [50, 37.5]);
     this.testGOArray = [this.testBoundingRaycastBox, this.testBoundingRaycastBox2];
-
+    this.worldOrigin = new Renderable();
+    this.worldOrigin.setColor([1, 0, 0, 1]);
+    this.worldOrigin.getXform().setSize(2, 2);
+    this.worldOrigin.getXform().setPosition(0, 0);
 
     // add to layer managers ...
     // 
@@ -207,8 +211,9 @@ MyGame.prototype.initialize = function () {
 
     // Gabe: testing VolumeNode object being added to layer to be drawn
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox);
-    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
+    //gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testRaycast);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.worldOrigin);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -256,8 +261,10 @@ MyGame.prototype.update = function () {
     // Gabe: debugging
     //console.log("raycast: " + this.testRaycast.getStartPoint() + ", " + this.testRaycast.getEndPoint());
     this.testRaycast.update();
-    console.log("testbox 1:" + this.testBoundingRaycastBox.checkIntersection(this.testRaycast));
-    console.log("testbox 2:" + this.testBoundingRaycastBox2.checkIntersection(this.testRaycast));
+    console.log("testbox 1: " + this.testBoundingRaycastBox.checkIntersection(this.testRaycast));
+    console.log("testbox 1 corners: " + this.testBoundingRaycastBox.getCorners());
+    console.log("raycast start: " + this.testRaycast.getStartPoint() + "raycast end: " + this.testRaycast.getEndPoint());
+    //console.log("testbox 2:" + this.testBoundingRaycastBox2.checkIntersection(this.testRaycast));
     this.testRaycast.setStartPoint(this.mIllumHero.getXform().getPosition());
 };
 
