@@ -55,7 +55,7 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
         } else if (line[0] * this.corners[i][0] + line[1] < this.corners[i][1]) {
             cornerTracker.push(1);
         } else {
-            return false;
+            return true;
         }
     }
     for (let i = 0; i < cornerTracker.length - 1; i++) {
