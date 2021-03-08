@@ -18,6 +18,8 @@ function MyGame() {
     this.kBgNormal = "assets/bg_normal.png";
     this.kBgLayer = "assets/bgLayer.png";
     this.kBgLayerNormal = "assets/bgLayer_normal.png";
+    
+    this.raycastHitting = false;
 
     // The camera to view the scene
     this.mCamera = null;
@@ -34,6 +36,7 @@ function MyGame() {
     // the hero and the support objects
     this.mLgtHero = null;
     this.mIllumHero = null;
+    this.rayCastEnd = null;
 
     this.mLgtMinion = null;
     this.mIllumMinion = null;
@@ -143,6 +146,10 @@ MyGame.prototype.initialize = function () {
     // 
     // the objects
     this.mIllumHero = new Hero(this.kMinionSprite, this.kMinionSpriteNormal, 40, 30);
+    this.rayCastEnd = new SpriteRenderable(this.kMinionSprite);
+    this.rayCastEnd.setColor([1, 1, 1, 0]);
+    this.rayCastEnd.getXform().setSize(5, 5);
+    this.rayCastEnd.getXform().setPosition(40, 30);
     this.mLgtHero = new Hero(this.kMinionSprite, null, 60, 40);
     this.mIllumMinion = new Minion(this.kMinionSprite, this.kMinionSpriteNormal, 25, 40);
     this.mLgtMinion = new Minion(this.kMinionSprite, null, 65, 25);
@@ -214,6 +221,7 @@ MyGame.prototype.initialize = function () {
     //gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testRaycast);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.worldOrigin);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.rayCastEnd);
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -224,6 +232,12 @@ MyGame.prototype.draw = function () {
 
     this.mCamera.setupViewProjection();
     gEngine.LayerManager.drawAllLayers(this.mCamera);
+    
+    if (this.raycastHitting) {
+        this.testRaycast.setRayColor([1, 1, 1, 1]);
+    } else {
+        this.testRaycast.setRayColor([0,0,0,1]);
+    }
 
 //    if (this.mShowHeroCam) {
 //        this.mParallaxCam.setupViewProjection();
@@ -249,6 +263,20 @@ MyGame.prototype.update = function () {
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.P)) {
         this.mShowHeroCam = !this.mShowHeroCam;
     }
+    var pos = this.rayCastEnd.getXform().getPosition();
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+        pos[1] += 0.5;
+    }
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)) {
+        pos[1] -= 0.5;
+    }
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+        pos[0] += 0.5;
+    }
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+        pos[0] -= 0.5;
+    }
+    this.rayCastEnd.getXform().setPosition(pos[0], pos[1]);
 
     // control the selected light
     var msg = "L=" + this.mLgtIndex + " ";
@@ -261,11 +289,11 @@ MyGame.prototype.update = function () {
     // Gabe: debugging
     //console.log("raycast: " + this.testRaycast.getStartPoint() + ", " + this.testRaycast.getEndPoint());
     this.testRaycast.update();
-    console.log("testbox 1: " + this.testBoundingRaycastBox.checkIntersection(this.testRaycast));
-    console.log("testbox 1 corners: " + this.testBoundingRaycastBox.getCorners());
-    console.log("raycast start: " + this.testRaycast.getStartPoint() + "raycast end: " + this.testRaycast.getEndPoint());
+    this.raycastHitting = this.testBoundingRaycastBox.checkIntersection(this.testRaycast);
+    console.log(this.raycastHitting);
     //console.log("testbox 2:" + this.testBoundingRaycastBox2.checkIntersection(this.testRaycast));
     this.testRaycast.setStartPoint(this.mIllumHero.getXform().getPosition());
+    this.testRaycast.setEndPoint((this.rayCastEnd.getXform().getPosition()));
 };
 
 MyGame.prototype._selectCharacter = function () {
