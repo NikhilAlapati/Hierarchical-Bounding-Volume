@@ -39,38 +39,55 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
 };
 
 // Gabe: helper methods to look at all boundaries and create more accordingly
+// Gabe: take a node, see if it breaks the rules above. create and split the array
+//       of GOs into two NEW nodes. Then find the positions and sizes of the nodes 
+//       after (this may be done on the node side of code (BoundingRaycastBox.js)).
 HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
     // now see if there are more than three in the box, but the volume isnt too small
     if (objectsArray.length > 3) {
-        var newNodePosition = this.findNewNodePosition(objectsArray, node);
-        var newNodeSize = this.findNewNodeSize();
-
-        var newNodeGOArray = this.moveGOsToNewArray(objectsArray);
+        
+        var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray);
+        
+        //var newNodePosition = ;
+        var newNodeSize = this.findNewNodeSize(newNodeGOArrays[0]);
     }
 };
 
 // move the GOs from the passed array to a new array for a new node
-HierarchicalVolumeManager.prototype.moveGOsToNewArray = function (objectsArray) {
-    var newNodeGOArray = [];
+HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray) {
+    
+    var newNode1GOArray = [];
+    var newNode2GOArray = [];
+    var tempArrayStorage = [newNode1GOArray, newNode2GOArray];
     for (var i = 0; i < objectsArray.length; i++) {
         if (this.previousSplitWasVirtical) {
             if (objectsArray[i].getXform().getXPos() <= newNodePosition[0]) {
                 // remove it from the objectsarray and put it in the newNodeGOArray
-                newNodeGOArray.push(objectsArray[i]);
-                objectsArray.splice(i, 1);
+                newNode1GOArray.push(objectsArray[i]);
+                //objectsArray.splice(i, 1);
+            } else {
+                // remove it from the objectsarray and put it in the newNodeGOArray
+                newNode2GOArray.push(objectsArray[i]);
+                //objectsArray.splice(i, 1);
             }
         } else { // if (!this.previousSplitWasVertical)
             if (objectsArray[i].getXform().getYPos() <= newNodePosition[1]) {
                 // remove it from the objectsarray and put it in the newNodeGOArray
-                newNodeGOArray.push(objectsArray[i]);
-                objectsArray.splice(i, 1);
+                newNode1GOArray.push(objectsArray[i]);
+                //objectsArray.splice(i, 1);
+            }
+            else {
+                // remove it from the objectsarray and put it in the newNodeGOArray
+                newNode2GOArray.push(objectsArray[i]);
+                //objectsArray.splice(i, 1);
             }
         }
     }
-    return newNodeGOArray;
+    return tempArrayStorage;
 };
 
-// Gabe: find position of a new node based on the GO in its zone
+// Gabe: this is not an accurate function name, this is finding the which direction
+//       to split and where the cutoff coordinate is for splitting GOs into a new array
 HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray, node) {
     var distanceX = 0;
     var distanceY = 0;
