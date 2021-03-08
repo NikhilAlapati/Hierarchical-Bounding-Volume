@@ -98,6 +98,10 @@
         <script type="text/javascript" src="src/Engine/Raycast/RaycastHit.js"></script>
         <script type="text/javascript" src="src/Engine/Raycast/BoundingRaycastBox.js"></script>
         
+        <!-- Raycast Example Levels -->
+        <script type="text/javascript" src="src/Example/TurretLevel.js"></script>
+        <script type="text/javascript" src="src/Example/BulletLevel.js"></script>
+
         <!-- Client game code -->
         <script type="text/javascript" src="src/MyGame/MyGame.js"></script>
         <script type="text/javascript" src="src/MyGame/MyGame_Lights.js"></script>
@@ -111,7 +115,7 @@
     </head>
 
     <body onload="
-        var myGame = new MyGame();
+        var myGame = new BulletLevel();
         gEngine.Core.initializeEngineCore('GLCanvas', myGame);
      ">
         <canvas id="GLCanvas" width="1280" height="720">
