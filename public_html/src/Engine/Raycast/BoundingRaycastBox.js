@@ -17,7 +17,7 @@ function BoundingRaycastBox(centerPos, w, h) {
     let halfHeight = size[1] / 2;
     this.corners = [
         [position[0] - halfWidth, position[1] + halfHeight],// T left
-        [(position[0] + halfWidth), position[0] + halfHeight],// T right
+        [(position[0] + halfWidth), position[1] + halfHeight],// T right
         [position[0] - halfWidth, position[1] - halfHeight],// B left
         [position[0] + halfWidth, position[1] - halfHeight]];// B right
     //this.boundRend.setElementUVCoordinate(0.15, 0.3, 0, 0.4);
@@ -55,15 +55,15 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
         } else if (line[0] * this.corners[i][0] + line[1] < this.corners[i][1]) {
             cornerTracker.push(1);
         } else {
-            return true;
+            return false;
         }
     }
     for (let i = 0; i < cornerTracker.length - 1; i++) {
         if (cornerTracker[i] !== cornerTracker[i + 1]) {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
 }; 
 
 BoundingRaycastBox.prototype.getCorners = function () {
