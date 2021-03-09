@@ -115,9 +115,18 @@
     </head>
 
     <body onload="
-        var myGame = new BulletLevel();
+        var myGame = new TurretLevel();
         gEngine.Core.initializeEngineCore('GLCanvas', myGame);
      ">
+        <button onclick="
+            var myGame = new TurretLevel();
+            gEngine.Core.initializeEngineCore('GLCanvas', myGame); 
+        ">Turret Level</button>
+        <button onclick="
+            var myGame = new BulletLevel();
+            gEngine.Core.initializeEngineCore('GLCanvas', myGame); 
+        ">Bullet Level</button>
+        <br />
         <canvas id="GLCanvas" width="1280" height="720">
             <!-- GLCanvas is the area we will draw in: a 640x480 area. -->
             Your browser does not support the HTML5 canvas.
