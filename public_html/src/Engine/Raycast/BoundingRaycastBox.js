@@ -94,6 +94,7 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
                 return true;
             }
         }
+        //TODO: make optimizations. dont need the second for loop.
         for (let i = 0; i < cornerTracker.length - 1; i++) {
             if (cornerTracker[i] !== cornerTracker[i + 1]) {
                 return true;
