@@ -46,7 +46,8 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
     // now see if there are more than three in the box, but the volume isnt too small
     if (objectsArray.length > 3) {
         
-        var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray);
+        var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
+        var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray, averageGOsPosition);
         var child1 = new BoundingRayCastBox([0, 0], 0, 0);
         var child2 = new BoundingRayCastBox([0, 0], 0, 0);
         
@@ -63,14 +64,14 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
 };
 
 // move the GOs from the passed array to a new array for a new node
-HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray) {
+HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray, averageGOsPosition) {
     
     var newNode1GOArray = [];
     var newNode2GOArray = [];
     var tempArrayStorage = [newNode1GOArray, newNode2GOArray];
     for (var i = 0; i < objectsArray.length; i++) {
         if (this.previousSplitWasVirtical) {
-            if (objectsArray[i].getXform().getXPos() <= newNodePosition[0]) {
+            if (objectsArray[i].getXform().getXPos() <= averageGOsPosition[0]) {
                 // remove it from the objectsarray and put it in the newNodeGOArray
                 newNode1GOArray.push(objectsArray[i]);
                 //objectsArray.splice(i, 1);
@@ -80,7 +81,7 @@ HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray)
                 //objectsArray.splice(i, 1);
             }
         } else { // if (!this.previousSplitWasVertical)
-            if (objectsArray[i].getXform().getYPos() <= newNodePosition[1]) {
+            if (objectsArray[i].getXform().getYPos() <= averageGOsPosition[1]) {
                 // remove it from the objectsarray and put it in the newNodeGOArray
                 newNode1GOArray.push(objectsArray[i]);
                 //objectsArray.splice(i, 1);
@@ -97,7 +98,7 @@ HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray)
 
 // Gabe: this is not an accurate function name, this is finding the which direction
 //       to split and where the cutoff coordinate is for splitting GOs into a new array
-HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray, node) {
+HierarchicalVolumeManager.prototype.findAverageGOsPosition = function (objectsArray, node) {
     var distanceX = 0;
     var distanceY = 0;
     var cumulativeWCPosition = [0, 0];
@@ -131,6 +132,10 @@ HierarchicalVolumeManager.prototype.determineSplitDirection = function (distance
         return true;
     }
     return false;
+};
+
+HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray, node) {
+    
 };
 
 // find the size to fit the objects inside of the volume node
