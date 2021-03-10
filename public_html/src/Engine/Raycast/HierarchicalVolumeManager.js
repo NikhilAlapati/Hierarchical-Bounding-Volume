@@ -103,7 +103,7 @@ HierarchicalVolumeManager.prototype.findAverageGOsPosition = function (objectsAr
     var distanceY = 0;
     var cumulativeWCPosition = [0, 0];
     for (var i = 0; i < objectsArray.length; i++) {
-        var objPos = objectsArray[i].getXform().getWCPosition();
+        var objPos = objectsArray[i].getXform().getPosition();
         var xPos = objPos[0];
         var yPos = objPos[1];
         distanceX += Math.abs(xPos);
@@ -135,7 +135,18 @@ HierarchicalVolumeManager.prototype.determineSplitDirection = function (distance
 };
 
 HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray, node) {
-    
+    var cumulativeWCPosition = [0, 0];
+    for (var i = 0; i < objectsArray.length; i++) {
+        var objPos = objectsArray[i].getXform().getPosition();
+        var xPos = objPos[0];
+        var yPos = objPos[1];
+        cumulativeWCPosition[0] += xPos;
+        cumulativeWCPosition[1] += yPos;
+    }
+    var averageWCPosition = [0, 0];
+    averageWCPosition[0] = cumulativeWCPosition[0] / objectsArray.length;
+    averageWCPosition[1] = cumulativeWCPosition[1] / objectsArray.length;
+    return averageWCPosition;
 };
 
 // find the size to fit the objects inside of the volume node
