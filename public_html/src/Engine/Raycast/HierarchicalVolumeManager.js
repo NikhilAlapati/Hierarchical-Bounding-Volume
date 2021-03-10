@@ -47,9 +47,18 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
     if (objectsArray.length > 3) {
         
         var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray);
+        var child1 = new BoundingRayCastBox([0, 0], 0, 0);
+        var child2 = new BoundingRayCastBox([0, 0], 0, 0);
         
-        //var newNodePosition = ;
-        var newNodeSize = this.findNewNodeSize(newNodeGOArrays[0]);
+        var newNode1Position = this.findNewNodePosition(newNodeGOArrays[0], child1);
+        var newNode2Position = this.findNewNodePosition(newNodeGOArrays[1], child2);
+        child1.getXform().setPosition(newNode1Position[0], newNode1Position[1]);
+        child2.getXform().setPosition(newNode2Position[0], newNode2Position[1]);
+        
+        var newNode1Size = this.findNewNodeSize(newNodeGOArrays[0], child1);
+        var newNode2Size = this.findNewNodeSize(newNodeGOArrays[1], child2);
+        child1.getXform().setSize(newNode1Size[0], newNode1Size[1]);
+        child2.getXform().setSize(newNode2Size[0], newNode2Size[1]);
     }
 };
 
@@ -95,7 +104,7 @@ HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray
     for (var i = 0; i < objectsArray.length; i++) {
         var objPos = objectsArray[i].getXform().getWCPosition();
         var xPos = objPos[0];
-        var yPos = objPos[1]
+        var yPos = objPos[1];
         distanceX += Math.abs(xPos);
         distanceY += Math.abs(yPos);
         cumulativeWCPosition[0] += xPos;
@@ -119,14 +128,42 @@ HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray
 // return true of the split is vertical, return false if the split is horizontal
 HierarchicalVolumeManager.prototype.determineSplitDirection = function (distanceX, distanceY) {
     if (distanceX >= distanceY) {
-        return true
+        return true;
     }
     return false;
 };
 
 // find the size to fit the objects inside of the volume node
-HierarchicalVolumeManager.prototype.findNewNodeSize = function () {
-
+HierarchicalVolumeManager.prototype.findNewNodeSize = function (objectsArray, node) {
+    var xform = objectsArray[0].getXform();
+    var left = xform.getXPos() - xform.getWidth()/2;
+    var right = xform.getXPos() + xform.getWidth()/2;
+    var top = xform.getYPos() + xform.getHeight()/2;
+    var bottom = xform.getYPos() - xform.getHeight()/2;
+    
+    for (var i = 0; i < objectsArray.length; i++) {
+        xform = objectsArray[i].getXform();
+        cLeft = xform.getXPos() - xform.getWidth()/2;
+        cRight = xform.getXPos() + xform.getWidth()/2;
+        cTop = xform.getYPos() + xform.getHeight()/2;
+        cBottom = xform.getYPos() - xform.getHeight()/2;
+        if (cLeft < left) {
+            left = cLeft;
+        }
+        if (cRight > right) {
+            right = cRight;
+        }
+        if (cTop > top) {
+            top = cTop;
+        }
+        if (cBottom < bottom) {
+            bottom = cBottom;
+        }
+    }
+    
+    var solutionWidth = Math.abs(right - left);
+    var solutionHeight = Math.abs(top - bottom);
+    return [solutionWidth, solutionHeight];
 };
 
 // to insert nodes into the BVH

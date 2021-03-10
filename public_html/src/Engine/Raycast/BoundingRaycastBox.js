@@ -40,6 +40,17 @@ BoundingRaycastBox.prototype.draw = function (aCamera) {
 
 BoundingRaycastBox.prototype.update = function () {
     this.myGameObject.update();
+    let xform = this.myGameObject.getXform();
+    let position = xform.getPosition();
+    let size = xform.getSize();
+    let halfWidth = size[0] / 2;
+    let halfHeight = size[1] / 2;
+    
+    this.corners = [
+        [position[0] - halfWidth, position[1] + halfHeight],// T left
+        [(position[0] + halfWidth), position[1] + halfHeight],// T right
+        [position[0] - halfWidth, position[1] - halfHeight],// B left
+        [position[0] + halfWidth, position[1] - halfHeight]];// B right
 };
 
 BoundingRaycastBox.prototype.getXform = function () {
