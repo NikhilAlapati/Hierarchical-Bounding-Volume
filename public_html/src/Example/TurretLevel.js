@@ -24,8 +24,14 @@ function TurretLevel() {
     this.raycast = null;
     this.player = null;
     
-    this.raycastBound = null;
+    //this.raycastBound = null;
     this.raycastHitting = false;
+    
+    // Gabe: node manager and test walls;
+    this.BoundingVolumeManager = null;
+    this.mHeadNode = null;
+    this.wall2 = null;
+    this.gOsArray = null;
 }
 
 gEngine.Core.inheritPrototype(TurretLevel, Scene);
@@ -65,7 +71,22 @@ TurretLevel.prototype.initialize = function () {
     this.turret.getXform().setSize(6, 6);
     
     this.raycast = new Raycast(this.turret.getXform().getPosition(), this.player.getXform().getPosition());
-    this.raycastBound = new BoundingRaycastBox([50, 30], 3, 30);
+    //this.raycastBound = new BoundingRaycastBox([50, 30], 3, 30);
+    
+    // Gabe: testing the BHV
+    this.wall2 = new Renderable();
+    this.wall2.getXform().setPosition(40, 45);
+    this.wall2.getXform().setSize(7.5, 7.5);
+    this.wall2.setColor([0, 0, 1, 1]);
+    this.gOsArray = [this.wall, this.wall2];
+    this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
+    this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
+    
+    // Gabe: debugging
+    console.log("wall: " + this.gOsArray);
+    console.log("headNode: " + this.mHeadNode);
+    console.log("headNode position: " + this.mHeadNode.getXform().getPosition());
+    console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -75,8 +96,17 @@ TurretLevel.prototype.draw = function () {
 
     this.mCamera.setupViewProjection();
     this.player.draw(this.mCamera);
-    this.raycastBound.draw(this.mCamera);
-    this.wall.draw(this.mCamera);
+    //this.raycastBound.draw(this.mCamera);
+    
+    //this.wall.draw(this.mCamera);
+    // Gabe: draw all walls
+    for (var i = 0; i < this.gOsArray.length; i++) {
+        this.gOsArray[i].draw(this.mCamera);
+    }
+    
+    // Gabe: draw BVH
+    this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
+    
     this.turret.draw(this.mCamera);
     if (this.raycastHitting) {
         this.raycast.setRayColor([1, 0, 0, 1]);
@@ -92,10 +122,14 @@ TurretLevel.prototype.update = function () {
     this.player.update();
     this.lookAt(this.player.getXform(), this.turret.getXform());
     this.turret.update();
-    this.raycastBound.update();
-    this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
+    //this.raycastBound.update();
+    //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
     this.raycast.setEndPoint(this.player.getXform().getPosition());
     this.raycast.update();
+    
+    // Gabe: debugging
+    //console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
+    console.log("headNode children: " + this.BoundingVolumeManager.getChildrenOfParent(this.mHeadNode));
 };
 
 TurretLevel.prototype.lookAt = function(target, looker) {

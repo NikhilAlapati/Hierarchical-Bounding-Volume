@@ -6,8 +6,9 @@
 
 
 function HierarchicalVolumeManager(objectsArray) {
+    this.mObjs = objectsArray;
     this.headNode = null;
-    this.hierarchyDepth = 0;
+    this.hierarchyNodesArray = null;
     this.previousSplitWasVirtical = null;
     this.constructHierarchy(objectsArray);
 }
@@ -37,13 +38,18 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
     
     // Create the head node
     if (objectsArray.length > 0) {
+        console.log("More than 0 objs");
         var headNodeSize = this.findNewNodeSize(objectsArray);
         this.headNode = new BoundingRaycastBox(this.findNewNodePosition(objectsArray), headNodeSize[0], headNodeSize[1]);
+        
+        this.hierarchyNodesArray = [this.headNode];
+        // construct the rest of the hierarchy
+        if (objectsArray.length > 3) {
+            console.log("More than 3 objs");
+            this.constructHierarchyHelper(objectsArray, this.headNode);
+        }
     }
-    // construct the rest of the hierarchy
-    if (objectsArray.length > 3) {
-        this.constructHierarchyHelper(objectsArray, this.headNode);
-    }
+    
 };
 
 // Gabe: helper methods to look at all boundaries and create more accordingly
@@ -72,6 +78,8 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         // asign children to the parent node
         node.setLeftChild(child1);
         node.setRightChild(child2);
+        this.hierarchyNodesArray.push(child1);
+        this.hierarchyNodesArray.push(child2);
         
         // recurse into children
         this.constructHierarchyHelper(newNodeGOArrays[0], child1);
@@ -214,3 +222,6 @@ HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, nod
 
 };
 
+HierarchicalVolumeManager.prototype.getHeadNode = function () { return this.headNode; };
+HierarchicalVolumeManager.prototype.getHierarchyArray = function () {return this.hierarchyNodesArray; };
+HierarchicalVolumeManager.prototype.getChildrenOfParent = function (node) { return [node.getLeftChild(), node.getRightChild()]; };

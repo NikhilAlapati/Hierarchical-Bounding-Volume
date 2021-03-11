@@ -9,9 +9,9 @@ function BoundingRaycastBox(centerPos, w, h) {
     this.boundRend = new Renderable(this.kSpriteSheetTexture);
     let xform = this.boundRend.getXform();
     this.myXform = xform;
-    xform.setSize(7.5, 7.5);
+    xform.setSize(w, h);
     xform.setPosition(centerPos[0], centerPos[1]);
-    this.boundRend.setColor([1, 1, 1, 1]);
+    this.boundRend.setColor([1, 1, 1, 0.3]);
     let position = xform.getPosition();
     let size = xform.getSize();
     let halfWidth = size[0] / 2;
@@ -82,9 +82,9 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
     let endIsRight = rayEndPoint[0] > myXPos + this.halfWidth;
     let endIsAbove = rayEndPoint[1] > myXPos + this.halfHeight;
     let endIsBelow = rayEndPoint[1] < myXPos - this.halfHeight;
-    console.log("startLeft: " + startIsLeft);
-    console.log("rayStartPoint[0]: " + rayStartPoint[0]);
-    console.log("myXPos - this.halfwidth: " + (myXPos - this.halfWidth)); // cause of this???????????????????
+    //console.log("startLeft: " + startIsLeft);
+    //console.log("rayStartPoint[0]: " + rayStartPoint[0]);
+    //console.log("myXPos - this.halfwidth: " + (myXPos - this.halfWidth)); // cause of this???????????????????
 
     if (startIsLeft && endIsLeft) {
         return false;

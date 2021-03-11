@@ -192,7 +192,7 @@ MyGame.prototype.initialize = function () {
 
     // Gabe: testing VolumeNode object
     this.testBoundingRaycastBox = new BoundingRaycastBox([30, 40], 3, 3);
-    this.testBoundingRaycastBox2 = new BoundingRaycastBox([50, 37.5], 3, 3);
+    this.testBoundingRaycastBox2 = new BoundingRaycastBox([30, 47], 3, 3);
     // Gabe: testing Raycast object
     this.testRaycast = new Raycast([40, 30], [50, 37.5]);
     this.testGOArray = [this.testBoundingRaycastBox, this.testBoundingRaycastBox2];
@@ -224,7 +224,7 @@ MyGame.prototype.initialize = function () {
 
     // Gabe: testing VolumeNode object being added to layer to be drawn
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox);
-    //gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
+    gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testBoundingRaycastBox2);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.testRaycast);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.worldOrigin);
     gEngine.LayerManager.addToLayer(gEngine.eLayer.eActors, this.rayCastEnd);
@@ -296,7 +296,7 @@ MyGame.prototype.update = function () {
     //console.log("raycast: " + this.testRaycast.getStartPoint() + ", " + this.testRaycast.getEndPoint());
     this.testRaycast.update();
     this.raycastHitting = this.testBoundingRaycastBox.checkIntersection(this.testRaycast);
-    console.log(this.raycastHitting);
+    //console.log(this.raycastHitting);
     //console.log("testbox 2:" + this.testBoundingRaycastBox2.checkIntersection(this.testRaycast));
     this.testRaycast.setStartPoint(this.mIllumHero.getXform().getPosition());
     this.testRaycast.setEndPoint((this.rayCastEnd.getXform().getPosition()));
