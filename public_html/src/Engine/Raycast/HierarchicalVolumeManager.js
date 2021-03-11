@@ -160,17 +160,47 @@ HierarchicalVolumeManager.prototype.determineSplitDirection = function (distance
 };
 
 HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray) {
+    var furthestHighObj = objectsArray[0];
+    var furthestLowObj = objectsArray[0];
+    var furthestLeftObj = objectsArray[0];
+    var furthestRightObj = objectsArray[0];
+    
     var cumulativeWCPosition = [0, 0];
     for (var i = 0; i < objectsArray.length; i++) {
-        var objPos = objectsArray[i].getXform().getPosition();
+        /*var objPos = objectsArray[i].getXform().getPosition();
         var xPos = objPos[0];
         var yPos = objPos[1];
         cumulativeWCPosition[0] += xPos;
-        cumulativeWCPosition[1] += yPos;
+        cumulativeWCPosition[1] += yPos;*/
+        
+        if ((objectsArray[i].getXform().getXPos() + (objectsArray[i].getXform().getWidth()/2)) >
+            (furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth()/2))) {
+            furthestRightObj = objectsArray[i];
+        }
+        if ((objectsArray[i].getXform().getXPos() - (objectsArray[i].getXform().getWidth()/2)) <
+            (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2))) {
+            furthestLeftObj = objectsArray[i];
+        }
+        
+        if ((objectsArray[i].getXform().getYPos() + (objectsArray[i].getXform().getHeight()/2)) >
+            (furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight()/2))) {
+            furthestHighObj = objectsArray[i];
+        }
+        if ((objectsArray[i].getXform().getYPos() - (objectsArray[i].getXform().getHeight()/2)) <
+            (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2))) {
+            furthestLowObj = objectsArray[i];
+        }
     }
     var averageWCPosition = [0, 0];
-    averageWCPosition[0] = cumulativeWCPosition[0] / objectsArray.length;
-    averageWCPosition[1] = cumulativeWCPosition[1] / objectsArray.length;
+    //averageWCPosition[0] = cumulativeWCPosition[0] / objectsArray.length;
+    averageWCPosition[0] = (((furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth()/2)) - 
+                           (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2))) / 2) +
+                           (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2));
+    
+    //averageWCPosition[1] = cumulativeWCPosition[1] / objectsArray.length;
+    averageWCPosition[1] = (((furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight()/2)) - 
+                           (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2))) / 2) +
+                           (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2));
     return averageWCPosition;
 };
 

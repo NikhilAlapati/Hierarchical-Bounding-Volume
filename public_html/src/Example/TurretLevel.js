@@ -31,6 +31,7 @@ function TurretLevel() {
     this.BoundingVolumeManager = null;
     this.mHeadNode = null;
     this.wall2 = null;
+    this.wall3 = null;
     this.gOsArray = null;
 }
 
@@ -62,7 +63,7 @@ TurretLevel.prototype.initialize = function () {
     
     this.player = new Hero(this.kMinionSprite, this.kMinionSpriteNormal, 10, 20);
     this.wall = new Renderable();
-    this.wall.getXform().setPosition(50, 30);
+    this.wall.getXform().setPosition(25, 20);
     this.wall.getXform().setSize(7.5, 7.5);
     this.wall.setColor([0, 0, 1, 1]);
     
@@ -75,10 +76,16 @@ TurretLevel.prototype.initialize = function () {
     
     // Gabe: testing the BHV
     this.wall2 = new Renderable();
-    this.wall2.getXform().setPosition(40, 45);
+    this.wall2.getXform().setPosition(30, 40);
     this.wall2.getXform().setSize(7.5, 7.5);
     this.wall2.setColor([0, 0, 1, 1]);
-    this.gOsArray = [this.wall, this.wall2];
+    
+    this.wall3 = new Renderable();
+    this.wall3.getXform().setPosition(60, 50);
+    this.wall3.getXform().setSize(7.5, 7.5);
+    this.wall3.setColor([0, 0, 1, 1]);
+    
+    this.gOsArray = [this.wall, this.wall2, this.wall3];
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
@@ -86,6 +93,7 @@ TurretLevel.prototype.initialize = function () {
     console.log("wall: " + this.gOsArray);
     console.log("headNode: " + this.mHeadNode);
     console.log("headNode position: " + this.mHeadNode.getXform().getPosition());
+    console.log("headNode size: " + this.mHeadNode.getXform().getSize());
     console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
 };
 
@@ -98,14 +106,14 @@ TurretLevel.prototype.draw = function () {
     this.player.draw(this.mCamera);
     //this.raycastBound.draw(this.mCamera);
     
+    // Gabe: draw BVH
+    this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
+    
     //this.wall.draw(this.mCamera);
     // Gabe: draw all walls
     for (var i = 0; i < this.gOsArray.length; i++) {
         this.gOsArray[i].draw(this.mCamera);
     }
-    
-    // Gabe: draw BVH
-    this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
     
     this.turret.draw(this.mCamera);
     if (this.raycastHitting) {
