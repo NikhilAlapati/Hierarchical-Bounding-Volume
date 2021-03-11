@@ -118,3 +118,10 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
 BoundingRaycastBox.prototype.getCorners = function () {
     return this.corners;
 };
+
+BoundingRaycastBox.prototype.getLeftChild = function () { return this.leftChild; };
+BoundingRaycastBox.prototype.getRightChild = function () { return this.rightChild; };
+BoundingRaycastBox.prototype.setLeftChild = function (child) { this.leftChild = child; };
+BoundingRaycastBox.prototype.setRightChild = function (child) { this.leftChild = child; };
+BoundingRaycastBox.prototype.getGameObejectsArray = function () { return this.myGameObjectsArray; };
+BoundingRaycastBox.prototype.setGameObejectsArray = function (gameObjectsArray) { this.myGameObjectsArray = gameObjectsArray; };

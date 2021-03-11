@@ -62,6 +62,9 @@ function MyGame() {
     // Gabe: testing GO storage for detecting raycast interception
     this.testGOArray = [];
     this.worldOrigin = null;
+    
+    // Gabe: node manager
+    this.BoundingVolumeManager = null;
 }
 
 gEngine.Core.inheritPrototype(MyGame, Scene);
@@ -197,6 +200,9 @@ MyGame.prototype.initialize = function () {
     this.worldOrigin.setColor([1, 0, 0, 1]);
     this.worldOrigin.getXform().setSize(2, 2);
     this.worldOrigin.getXform().setPosition(0, 0);
+    // Gabe: bounding volume manager initialization
+    //new manager(array of all GOs)
+    // when creating the manager, must have an array of all gameobjects ready to pass in
 
     // add to layer managers ...
     // 
