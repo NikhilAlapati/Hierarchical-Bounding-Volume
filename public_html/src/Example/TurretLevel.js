@@ -36,6 +36,8 @@ function TurretLevel() {
     this.wall5 = null;
     this.wall6 = null;
     this.wall7 = null;
+    this.wall8 = null;
+    this.wall9 = null;
     this.gOsArray = null;
 }
 
@@ -67,7 +69,7 @@ TurretLevel.prototype.initialize = function () {
     
     this.player = new Hero(this.kMinionSprite, this.kMinionSpriteNormal, 10, 20);
     this.wall = new Renderable();
-    this.wall.getXform().setPosition(25, 20);
+    this.wall.getXform().setPosition(40, 30);
     this.wall.getXform().setSize(7.5, 7.5);
     this.wall.setColor([0, 0, 1, 1]);
     
@@ -95,12 +97,12 @@ TurretLevel.prototype.initialize = function () {
     this.wall4.setColor([0, 0, 1, 1]);
     
     this.wall5 = new Renderable();
-    this.wall5.getXform().setPosition(30, 60);
+    this.wall5.getXform().setPosition(42, 50);
     this.wall5.getXform().setSize(7.5, 7.5);
     this.wall5.setColor([0, 0, 1, 1]);
     
     this.wall6 = new Renderable();
-    this.wall6.getXform().setPosition(63, 42);
+    this.wall6.getXform().setPosition(63, 38);
     this.wall6.getXform().setSize(7.5, 7.5);
     this.wall6.setColor([0, 0, 1, 1]);
     
@@ -109,7 +111,17 @@ TurretLevel.prototype.initialize = function () {
     this.wall7.getXform().setSize(7.5, 7.5);
     this.wall7.setColor([0, 0, 1, 1]);
     
-    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5, this.wall6, this.wall7];
+    this.wall8 = new Renderable();
+    this.wall8.getXform().setPosition(50, 35);
+    this.wall8.getXform().setSize(7.5, 7.5);
+    this.wall8.setColor([0, 0, 1, 1]);
+    
+    this.wall9 = new Renderable();
+    this.wall9.getXform().setPosition(50, 59);
+    this.wall9.getXform().setSize(7.5, 7.5);
+    this.wall9.setColor([0, 0, 1, 1]);
+    
+    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5, this.wall6, this.wall7, this.wall8, this.wall9];
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
