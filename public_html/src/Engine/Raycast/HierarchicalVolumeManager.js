@@ -62,8 +62,8 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         
         var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
         var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray, averageGOsPosition);
-        var child1 = new BoundingRayCastBox([0, 0], 0, 0);
-        var child2 = new BoundingRayCastBox([0, 0], 0, 0);
+        var child1 = new BoundingRaycastBox([0, 0], 0, 0);
+        var child2 = new BoundingRaycastBox([0, 0], 0, 0);
         
         var newNode1Position = this.findNewNodePosition(newNodeGOArrays[0], child1);
         var newNode2Position = this.findNewNodePosition(newNodeGOArrays[1], child2);

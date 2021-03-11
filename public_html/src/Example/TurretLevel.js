@@ -32,6 +32,10 @@ function TurretLevel() {
     this.mHeadNode = null;
     this.wall2 = null;
     this.wall3 = null;
+    this.wall4 = null;
+    this.wall5 = null;
+    this.wall6 = null;
+    this.wall7 = null;
     this.gOsArray = null;
 }
 
@@ -85,7 +89,27 @@ TurretLevel.prototype.initialize = function () {
     this.wall3.getXform().setSize(7.5, 7.5);
     this.wall3.setColor([0, 0, 1, 1]);
     
-    this.gOsArray = [this.wall, this.wall2, this.wall3];
+    this.wall4 = new Renderable();
+    this.wall4.getXform().setPosition(70, 60);
+    this.wall4.getXform().setSize(7.5, 7.5);
+    this.wall4.setColor([0, 0, 1, 1]);
+    
+    this.wall5 = new Renderable();
+    this.wall5.getXform().setPosition(30, 60);
+    this.wall5.getXform().setSize(7.5, 7.5);
+    this.wall5.setColor([0, 0, 1, 1]);
+    
+    this.wall6 = new Renderable();
+    this.wall6.getXform().setPosition(63, 42);
+    this.wall6.getXform().setSize(7.5, 7.5);
+    this.wall6.setColor([0, 0, 1, 1]);
+    
+    this.wall7 = new Renderable();
+    this.wall7.getXform().setPosition(60, 50);
+    this.wall7.getXform().setSize(7.5, 7.5);
+    this.wall7.setColor([0, 0, 1, 1]);
+    
+    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5, this.wall6, this.wall7];
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
@@ -107,7 +131,10 @@ TurretLevel.prototype.draw = function () {
     //this.raycastBound.draw(this.mCamera);
     
     // Gabe: draw BVH
-    this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
+    //this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
+    for (var i = 0; i < this.BoundingVolumeManager.getHierarchyArray().length; i++) {
+        this.BoundingVolumeManager.getHierarchyArray()[i].draw(this.mCamera);
+    }
     
     //this.wall.draw(this.mCamera);
     // Gabe: draw all walls
