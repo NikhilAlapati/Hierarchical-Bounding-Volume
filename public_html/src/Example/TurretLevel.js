@@ -39,6 +39,7 @@ function TurretLevel() {
     this.wall8 = null;
     this.wall9 = null;
     this.gOsArray = null;
+    this.gOInterceptedArray = null;
 }
 
 gEngine.Core.inheritPrototype(TurretLevel, Scene);
@@ -101,27 +102,7 @@ TurretLevel.prototype.initialize = function () {
     this.wall5.getXform().setSize(7.5, 7.5);
     this.wall5.setColor([0, 0, 1, 1]);
     
-    this.wall6 = new Renderable();
-    this.wall6.getXform().setPosition(63, 38);
-    this.wall6.getXform().setSize(7.5, 7.5);
-    this.wall6.setColor([0, 0, 1, 1]);
-    
-    this.wall7 = new Renderable();
-    this.wall7.getXform().setPosition(60, 50);
-    this.wall7.getXform().setSize(7.5, 7.5);
-    this.wall7.setColor([0, 0, 1, 1]);
-    
-    this.wall8 = new Renderable();
-    this.wall8.getXform().setPosition(50, 35);
-    this.wall8.getXform().setSize(7.5, 7.5);
-    this.wall8.setColor([0, 0, 1, 1]);
-    
-    this.wall9 = new Renderable();
-    this.wall9.getXform().setPosition(50, 59);
-    this.wall9.getXform().setSize(7.5, 7.5);
-    this.wall9.setColor([0, 0, 1, 1]);
-    
-    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5, this.wall6, this.wall7, this.wall8, this.wall9];
+    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5];
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
@@ -172,11 +153,12 @@ TurretLevel.prototype.update = function () {
     //this.raycastBound.update();
     //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
     this.raycast.setEndPoint(this.player.getXform().getPosition());
-    this.raycast.update();
+    this.gOInterceptedArray = this.raycast.update(this.mHeadNode);
     
     // Gabe: debugging
     //console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
-    console.log("headNode children: " + this.BoundingVolumeManager.getChildrenOfParent(this.mHeadNode));
+    //console.log("headNode children: " + this.BoundingVolumeManager.getChildrenOfParent(this.mHeadNode));
+    //console.log("Array of intercepted GOs: " + this.gOInterceptedArray);
 };
 
 TurretLevel.prototype.lookAt = function(target, looker) {

@@ -48,6 +48,49 @@ Raycast.prototype.getLine = function () {
 Raycast.prototype.getMagnitude = function () {
     return Math.sqrt(Math.pow(this.endPoint[1] - this.startPoint[1], 2) + Math.pow(this.endPoint[0] - this.startPoint[0], 2));
 };
-Raycast.prototype.update = function () {
+Raycast.prototype.update = function (headNode) {
     this.updateLine();
+    return this.checkHeadNodeIntercept(headNode);
+};
+
+Raycast.prototype.checkHeadNodeIntercept = function (headNode) {
+    if (headNode !== null) {
+        if (headNode.checkIntersection(this)) {
+            var gOsIntercepted = [];
+            //console.log("headNode intercepted");
+            this.interceptionHelper(headNode, gOsIntercepted);
+            return gOsIntercepted;
+        }
+    }
+    return null;
+};
+
+
+Raycast.prototype.interceptionHelper = function (node, gOsIntercepted) {
+    if (node.checkIntersection(this)) {
+        if (this.checkIfNodeHasChildren(node)) {
+            this.interceptionHelper(node.getLeftChild(), gOsIntercepted);
+            this.interceptionHelper(node.getRightChild(), gOsIntercepted);
+        } else {
+            this.checkGOsIntercepts(node);
+        }
+    }
+};
+
+Raycast.prototype.checkIfNodeHasChildren = function (node) {
+    if (node.getLeftChild() !== null && node.getRightChild() !== null) {
+        return true;
+    }
+    return false;
+};
+
+Raycast.prototype.checkGOsIntercepts = function (node, gOsIntercepted) {
+    //console.log("checking for GOs interception");
+    console.log("node's GOs: " + node.getGameObjectsArray());
+    for (var i = 0; node.getGameObjectsArray().length; i++) {
+        var gameObj = node.getGameObjectsArray()[i];
+        if (gameObj.checkIntersection(this)) {
+            gOsIntercepted.push(gameObj);
+        }
+    }
 };

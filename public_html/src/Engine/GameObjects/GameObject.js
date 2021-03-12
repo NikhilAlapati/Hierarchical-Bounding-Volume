@@ -102,3 +102,5 @@ GameObject.prototype.draw = function (aCamera) {
         this.mPhysicsComponent.draw(aCamera);
     }
 };
+
+GameObject.prototype.checkIntersection = function (raycast) { this.mRenderComponent.checkIntersection(raycast); };

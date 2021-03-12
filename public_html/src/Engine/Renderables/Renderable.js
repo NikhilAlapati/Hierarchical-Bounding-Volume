@@ -41,3 +41,5 @@ Renderable.prototype.swapShader = function (s) {
     return out;
 };
 Renderable.prototype._setShader = function (s) { this.mShader = s; };
+
+Renderable.prototype.checkIntersection = function (raycast) { this.getXform().checkIntersection(raycast); };

@@ -41,13 +41,15 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
         console.log("More than 0 objs");
         var headNodeSize = this.findNewNodeSize(objectsArray);
         this.headNode = new BoundingRaycastBox(this.findNewNodePosition(objectsArray), headNodeSize[0], headNodeSize[1]);
+        this.headNode.setGameObjectsArray(objectsArray);
         
         this.hierarchyNodesArray = [this.headNode];
         // construct the rest of the hierarchy
         if (objectsArray.length > 3) {
             console.log("More than 3 objs");
-            this.constructHierarchyHelper(objectsArray, this.headNode);
+            this.constructHierarchyHelper(Object.assign(objectsArray), this.headNode);
         }
+        console.log("headNode GOs: " + this.headNode.getGameObjectsArray());
     }
     
 };
@@ -62,6 +64,8 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         
         var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
         var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray, averageGOsPosition);
+        console.log("newNodeGOArrays[0]: " + newNodeGOArrays[0]);// + " || " + newNodeGOArrays[1]);
+        console.log("newNodeGOArrays[1]: " + newNodeGOArrays[1]);
         var child1 = new BoundingRaycastBox([0, 0], 0, 0);
         var child2 = new BoundingRaycastBox([0, 0], 0, 0);
         
@@ -81,11 +85,16 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         this.hierarchyNodesArray.push(child1);
         this.hierarchyNodesArray.push(child2);
         
+        // asign GOs to children nodes
+        child1.setGameObjectsArray(newNodeGOArrays[0]);
+        child2.setGameObjectsArray(newNodeGOArrays[1]);
+        console.log("child1: " + child1.getGameObjectsArray());
+        console.log("child2: " + child2.getGameObjectsArray());
+        
         // recurse into children
         this.constructHierarchyHelper(newNodeGOArrays[0], child1);
         this.constructHierarchyHelper(newNodeGOArrays[1], child2);
     }
-    
 };
 
 // move the GOs from the passed array to a new array for a new node
@@ -165,7 +174,7 @@ HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray
     var furthestLeftObj = objectsArray[0];
     var furthestRightObj = objectsArray[0];
     
-    var cumulativeWCPosition = [0, 0];
+    //var cumulativeWCPosition = [0, 0];
     for (var i = 0; i < objectsArray.length; i++) {
         /*var objPos = objectsArray[i].getXform().getPosition();
         var xPos = objPos[0];
