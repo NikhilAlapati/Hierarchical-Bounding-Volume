@@ -127,7 +127,20 @@ Transform.prototype.checkIntersection = function (raycast) {
     var top = [corners[0][0], corners[0][1], corners[1][0], corners[1][1]];
     var bot = [corners[2][0], corners[2][1], corners[3][0], corners[3][1]];
     var allBorders = [left, right, top, bot];
-    for (var i = 0; i < 4; i++) {
+    if (raycast.getStartPoint()[0] < this.corners[1][0] &&
+        raycast.getStartPoint()[0] > this.corners[0][0] &&
+        raycast.getStartPoint()[1] < this.corners[1][1] &&
+        raycast.getStartPoint()[1] > this.corners[2][1]) {
+        return true;
+    }
+    if (raycast.getEndPoint()[0] < this.corners[1][0] &&
+        raycast.getEndPoint()[0] > this.corners[0][0] &&
+        raycast.getEndPoint()[1] < this.corners[1][1] &&
+        raycast.getEndPoint()[1] > this.corners[2][1]) {
+        return true;
+    }
+    
+    for (var i = 0; i < corners.length; i++) {
         if (this.linesIntersect(rayStartPoint[0], rayStartPoint[1],
                                 rayEndPoint[0], rayEndPoint[1],
                                 allBorders[i][0], allBorders[i][1],
