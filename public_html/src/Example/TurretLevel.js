@@ -215,7 +215,7 @@ TurretLevel.prototype.makeBVHObjects = function () {
     objs.push(this.wall7);
     
     this.wall8 = new Renderable();
-    this.wall8.getXform().setPosition(72, 20);
+    this.wall8.getXform().setPosition(72, 23);
     this.wall8.getXform().setSize(9.5, 7.5);
     this.wall8.setColor([0, 0, 1, 1]);
     objs.push(this.wall8);
