@@ -42,4 +42,4 @@ Renderable.prototype.swapShader = function (s) {
 };
 Renderable.prototype._setShader = function (s) { this.mShader = s; };
 
-Renderable.prototype.checkIntersection = function (raycast) { this.getXform().checkIntersection(raycast); };
+Renderable.prototype.checkIntersection = function (raycast) { return this.getXform().checkIntersection(raycast); };

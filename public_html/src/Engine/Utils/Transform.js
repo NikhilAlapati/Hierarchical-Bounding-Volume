@@ -111,60 +111,56 @@ Transform.prototype.getXform = function () {
 //</editor-fold>
 
 Transform.prototype.checkIntersection = function (raycast) {
-    let line = raycast.getLine();
-    let cornerTracker = [];
-
+    this.halfHeight = this.getHeight()/2;
+    this.halfWidth = this.getWidth()/2;
+    let position = this.getPosition();
+    this.corners = [
+        [position[0] - this.halfWidth, position[1] + this.halfHeight],// T left
+        [(position[0] + this.halfWidth), position[1] + this.halfHeight],// T right
+        [position[0] - this.halfWidth, position[1] - this.halfHeight],// B left
+        [position[0] + this.halfWidth, position[1] - this.halfHeight]];// B right
     let rayEndPoint = raycast.getEndPoint();
     let rayStartPoint = raycast.getStartPoint();
-    let myXPos = this.getPosition()[0];
-    let myYPos = this.getPosition()[1];
-    //console.log(rayEndPoint[0]);
-    if ((rayEndPoint[0] >= (myXPos - this.halfWidth)
-        && rayEndPoint[0] <= (myXPos + this.halfWidth))
-        && (rayEndPoint[1] >= (myYPos - this.halfHeight)
-        && rayEndPoint[1] <= (myYPos + this.halfWidth))) {
-        return true;
-    }
-
-    // Gabe: This isnt working for some reason???????????????????????????????????????????????????????????
-    let startIsLeft = rayStartPoint[0] < (myXPos - this.halfWidth);
-    let startIsRight = rayStartPoint[0] > myXPos + this.halfWidth;
-    let startIsAbove = rayStartPoint[1] > myYPos + this.halfHeight;
-    let startIsBelow = rayStartPoint[1] < myYPos - this.halfHeight;
-    let endIsLeft = rayEndPoint[0] < myXPos - this.halfWidth;
-    let endIsRight = rayEndPoint[0] > myXPos + this.halfWidth;
-    let endIsAbove = rayEndPoint[1] > myXPos + this.halfHeight;
-    let endIsBelow = rayEndPoint[1] < myXPos - this.halfHeight;
-    //console.log("startLeft: " + startIsLeft);
-    //console.log("rayStartPoint[0]: " + rayStartPoint[0]);
-    //console.log("myXPos - this.halfwidth: " + (myXPos - this.halfWidth)); // cause of this???????????????????
-
-    if (startIsLeft && endIsLeft) {
-        return false;
-    } else if (startIsRight && endIsRight) {
-        return false;
-    } else if (startIsAbove && endIsAbove) {
-        return false;
-    } else if (startIsBelow && endIsBelow) {
-        return false;
-    } else {
-
-        for (let i = 0; i < this.corners.length; i++) {
-            if (line[0] * this.corners[i][0] + line[1] > this.corners[i][1]) {
-                cornerTracker.push(0);
-            } else if (line[0] * this.corners[i][0] + line[1] < this.corners[i][1]) {
-                cornerTracker.push(1);
-            } else {
-                return true;
-            }
-        }
-        //TODO: make optimizations. dont need the second for loop.
-        for (let i = 0; i < cornerTracker.length - 1; i++) {
-            if (cornerTracker[i] !== cornerTracker[i + 1]) {
-                return true;
-            }
+    var corners = this.corners;
+    var left = [corners[0][0], corners[0][1], corners[2][0], corners[2][1]];
+    var right = [corners[1][0], corners[1][1], corners[3][0], corners[3][1]];
+    var top = [corners[0][0], corners[0][1], corners[1][0], corners[1][1]];
+    var bot = [corners[2][0], corners[2][1], corners[3][0], corners[3][1]];
+    var allBorders = [left, right, top, bot];
+    for (var i = 0; i < 4; i++) {
+        if (this.linesIntersect(rayStartPoint[0], rayStartPoint[1],
+                                rayEndPoint[0], rayEndPoint[1],
+                                allBorders[i][0], allBorders[i][1],
+                                allBorders[i][2], allBorders[i][3])) {
+            return true;
         }
     }
     return false;
 };
+
+// sourced from: 
+// https://gist.github.com/Joncom/e8e8d18ebe7fe55c3894
+// checks if two lines intersect
+// parameters:
+// line 1 start x and y, line 1 end x and y, similarly line 2
+Transform.prototype.linesIntersect = function(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
+
+    var s1_x, s1_y, s2_x, s2_y;
+    s1_x = p1_x - p0_x;
+    s1_y = p1_y - p0_y;
+    s2_x = p3_x - p2_x;
+    s2_y = p3_y - p2_y;
+
+    var s, t;
+    s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        // Collision detected
+        return true;
+    }
+    return false; // No collision
+};
+
 Transform.prototype.getCorners = function () { return this.corners; };

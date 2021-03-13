@@ -55,9 +55,9 @@ Raycast.prototype.update = function (headNode) {
 
 Raycast.prototype.checkHeadNodeIntercept = function (headNode) {
     if (headNode !== null) {
+        console.log(headNode.checkIntersection(this));
         if (headNode.checkIntersection(this)) {
             var gOsIntercepted = [];
-            //console.log("headNode intercepted");
             this.interceptionHelper(headNode, gOsIntercepted);
             return gOsIntercepted;
         }
@@ -76,7 +76,7 @@ Raycast.prototype.interceptionHelper = function (node, gOsIntercepted) {
             console.log("in raycast update");
         } else {
             console.log("are there children?: " + node.getLeftChild() + node.getRightChild());
-            this.checkGOsIntercepts(node);
+            this.checkGOsIntercepts(node, gOsIntercepted);
         }
     }
     //}

@@ -103,4 +103,4 @@ GameObject.prototype.draw = function (aCamera) {
     }
 };
 
-GameObject.prototype.checkIntersection = function (raycast) { this.mRenderComponent.checkIntersection(raycast); };
+GameObject.prototype.checkIntersection = function (raycast) { return this.mRenderComponent.checkIntersection(raycast); };
