@@ -61,19 +61,23 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
 HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
     // now see if there are more than three in the box, but the volume isnt too small
     if (objectsArray.length > 3) {
-        
+        // split the GOs into two groups to assign to two children
         var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
         var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray, averageGOsPosition);
         console.log("newNodeGOArrays[0]: " + newNodeGOArrays[0]);// + " || " + newNodeGOArrays[1]);
         console.log("newNodeGOArrays[1]: " + newNodeGOArrays[1]);
+        
+        // create the children nodes
         var child1 = new BoundingRaycastBox([0, 0], 0, 0);
         var child2 = new BoundingRaycastBox([0, 0], 0, 0);
         
+        // find the children's WC positions
         var newNode1Position = this.findNewNodePosition(newNodeGOArrays[0], child1);
         var newNode2Position = this.findNewNodePosition(newNodeGOArrays[1], child2);
         child1.getXform().setPosition(newNode1Position[0], newNode1Position[1]);
         child2.getXform().setPosition(newNode2Position[0], newNode2Position[1]);
         
+        // find the children's sizes
         var newNode1Size = this.findNewNodeSize(newNodeGOArrays[0], child1);
         var newNode2Size = this.findNewNodeSize(newNodeGOArrays[1], child2);
         child1.getXform().setSize(newNode1Size[0], newNode1Size[1]);

@@ -67,18 +67,22 @@ Raycast.prototype.checkHeadNodeIntercept = function (headNode) {
 
 
 Raycast.prototype.interceptionHelper = function (node, gOsIntercepted) {
+    //if (node !== null) {
     if (node.checkIntersection(this)) {
-        if (this.checkIfNodeHasChildren(node)) {
+        if (this.hasChildren(node)) {
             this.interceptionHelper(node.getLeftChild(), gOsIntercepted);
             this.interceptionHelper(node.getRightChild(), gOsIntercepted);
+            console.log("in raycast update");
         } else {
+            console.log("are there children?: " + node.getLeftChild() + node.getRightChild());
             this.checkGOsIntercepts(node);
         }
     }
+    //}
 };
 
-Raycast.prototype.checkIfNodeHasChildren = function (node) {
-    if (node.getLeftChild() !== null && node.getRightChild() !== null) {
+Raycast.prototype.hasChildren = function (node) {
+    if (node.getLeftChild() !== null){// && node.getRightChild() !== null) {
         return true;
     }
     return false;
@@ -87,7 +91,7 @@ Raycast.prototype.checkIfNodeHasChildren = function (node) {
 Raycast.prototype.checkGOsIntercepts = function (node, gOsIntercepted) {
     //console.log("checking for GOs interception");
     console.log("node's GOs: " + node.getGameObjectsArray());
-    for (var i = 0; node.getGameObjectsArray().length; i++) {
+    for (var i = 0; i < node.getGameObjectsArray().length; i++) {
         var gameObj = node.getGameObjectsArray()[i];
         if (gameObj.checkIntersection(this)) {
             gOsIntercepted.push(gameObj);

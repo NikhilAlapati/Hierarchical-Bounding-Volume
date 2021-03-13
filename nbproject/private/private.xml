@@ -15,11 +15,11 @@
         <group>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Utils/CollisionInfo.js</file>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Raycast/HierarchicalVolumeManager.js</file>
-            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/MyGame/MyGame.js</file>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Raycast/Raycast.js</file>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Example/TurretLevel.js</file>
-            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Example/BulletLevel.js</file>
-            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Raycast/RaycastHit.js</file>
+            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Utils/Transform.js</file>
+            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Renderables/Renderable.js</file>
+            <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/GameObjects/GameObject.js</file>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Raycast/BoundingRaycastBox.js</file>
             <file>file:/C:/Users/olive/Documents/GitHub/CSS452FinalProject/public_html/src/Engine/Utils/BoundingBox.js</file>
         </group>

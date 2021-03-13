@@ -111,6 +111,8 @@ TurretLevel.prototype.initialize = function () {
     console.log("headNode: " + this.mHeadNode);
     console.log("headNode position: " + this.mHeadNode.getXform().getPosition());
     console.log("headNode size: " + this.mHeadNode.getXform().getSize());
+    console.log("headNode's children: " + this.mHeadNode.getLeftChild() + ", " + this.mHeadNode.getRightChild());
+    console.log("headNode's right child's children: " + this.mHeadNode.getRightChild().getLeftChild() + ", " + this.mHeadNode.getRightChild().getRightChild());
     console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
 };
 
