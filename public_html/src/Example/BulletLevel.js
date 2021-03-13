@@ -18,10 +18,11 @@ function BulletLevel() {
     
     this.turret = null;
     this.targets = [];
-    this.raycast = null;
     this.spawnRate = 2;
     
-    this.raycastHitting = false;
+    // Gabe: Raycast & BVH
+    this.mBVH = null;
+    this.raycast = null;
 }
 
 gEngine.Core.inheritPrototype(BulletLevel, Scene);
@@ -64,11 +65,12 @@ BulletLevel.prototype.draw = function () {
     for (var i = 0; i < this.targets.length; i++) {
         this.targets[i].draw(this.mCamera);
     }
-    if (this.raycastHitting) {
+    
+    //if () {
         this.raycast.setRayColor([1, 0, 0, 1]);
-    } else {
+    //} else {
         this.raycast.setRayColor([0, 1, 0, 1]);
-    }
+    //}
     this.raycast.draw(this.mCamera);
 };
 

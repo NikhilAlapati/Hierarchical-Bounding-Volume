@@ -38,6 +38,7 @@ function TurretLevel() {
     this.wall7 = null;
     this.wall8 = null;
     this.wall9 = null;
+    this.wall10 = null;
     this.gOsArray = null;
     this.gOInterceptedArray = null;
 }
@@ -69,51 +70,28 @@ TurretLevel.prototype.initialize = function () {
     // sets the background to gray
     
     this.player = new Hero(this.kMinionSprite, this.kMinionSpriteNormal, 10, 20);
-    this.wall = new Renderable();
-    this.wall.getXform().setPosition(40, 30);
-    this.wall.getXform().setSize(7.5, 7.5);
-    this.wall.setColor([0, 0, 1, 1]);
+    
     
     this.turret = new SpriteRenderable(this.kTurret);
-    this.turret.getXform().setPosition(90, 20);
+    this.turret.getXform().setPosition(90, 40);
     this.turret.getXform().setSize(6, 6);
     
     this.raycast = new Raycast(this.turret.getXform().getPosition(), this.player.getXform().getPosition());
     //this.raycastBound = new BoundingRaycastBox([50, 30], 3, 30);
     
-    // Gabe: testing the BHV
-    this.wall2 = new Renderable();
-    this.wall2.getXform().setPosition(30, 40);
-    this.wall2.getXform().setSize(7.5, 7.5);
-    this.wall2.setColor([0, 0, 1, 1]);
-    
-    this.wall3 = new Renderable();
-    this.wall3.getXform().setPosition(60, 50);
-    this.wall3.getXform().setSize(7.5, 7.5);
-    this.wall3.setColor([0, 0, 1, 1]);
-    
-    this.wall4 = new Renderable();
-    this.wall4.getXform().setPosition(70, 60);
-    this.wall4.getXform().setSize(7.5, 7.5);
-    this.wall4.setColor([0, 0, 1, 1]);
-    
-    this.wall5 = new Renderable();
-    this.wall5.getXform().setPosition(42, 50);
-    this.wall5.getXform().setSize(7.5, 7.5);
-    this.wall5.setColor([0, 0, 1, 1]);
-    
-    this.gOsArray = [this.wall, this.wall2, this.wall3, this.wall4, this.wall5];
+    // Gabe: make objects for the BVH
+    this.gOsArray = this.makeBVHObjects();
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
     // Gabe: debugging
-    console.log("wall: " + this.gOsArray);
+    /*console.log("wall: " + this.gOsArray);
     console.log("headNode: " + this.mHeadNode);
     console.log("headNode position: " + this.mHeadNode.getXform().getPosition());
     console.log("headNode size: " + this.mHeadNode.getXform().getSize());
     console.log("headNode's children: " + this.mHeadNode.getLeftChild() + ", " + this.mHeadNode.getRightChild());
     console.log("headNode's right child's children: " + this.mHeadNode.getRightChild().getLeftChild() + ", " + this.mHeadNode.getRightChild().getRightChild());
-    console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
+    console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());*/
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -138,7 +116,7 @@ TurretLevel.prototype.draw = function () {
     }
     
     this.turret.draw(this.mCamera);
-    if (this.raycastHitting) {
+    if (this.gOInterceptedArray !== null) {
         this.raycast.setRayColor([1, 0, 0, 1]);
     } else {
         this.raycast.setRayColor([0, 1, 0, 1]);
@@ -155,9 +133,18 @@ TurretLevel.prototype.update = function () {
     //this.raycastBound.update();
     //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
     this.raycast.setEndPoint(this.player.getXform().getPosition());
+    for (var i = 0; i < this.gOsArray.length; i++) {
+        this.gOsArray[i].setColor([0, 0, 1, 1]);
+    }
     this.gOInterceptedArray = this.raycast.update(this.mHeadNode);
+    if (this.gOInterceptedArray !== null) {
+        for (var i = 0; i < this.gOInterceptedArray.length; i++) {
+            this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
+        }
+    }
     
     // Gabe: debugging
+    //console.log("Intercepted GOs: " + this.gOInterceptedArray);
     //console.log("Hierarchy array of nodes: " + this.BoundingVolumeManager.getHierarchyArray());
     //console.log("headNode children: " + this.BoundingVolumeManager.getChildrenOfParent(this.mHeadNode));
     //console.log("Array of intercepted GOs: " + this.gOInterceptedArray);
@@ -181,4 +168,69 @@ TurretLevel.prototype.lookAt = function(target, looker) {
 TurretLevel.prototype.dotProduct = function(vec1, vec2) {
     var dot = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
     return dot(vec1, vec2);
+};
+
+TurretLevel.prototype.makeBVHObjects = function () {
+    var objs = [];
+    this.wall1 = new Renderable();
+    this.wall1.getXform().setPosition(10, 30);
+    this.wall1.getXform().setSize(6, 6);
+    this.wall1.setColor([0, 0, 1, 1]);
+    objs.push(this.wall1);
+    
+    this.wall2 = new Renderable();
+    this.wall2.getXform().setPosition(75, 45);
+    this.wall2.getXform().setSize(3.5, 3.5);
+    this.wall2.setColor([0, 0, 1, 1]);
+    objs.push(this.wall2);
+    
+    this.wall3 = new Renderable();
+    this.wall3.getXform().setPosition(42, 40);
+    this.wall3.getXform().setSize(7.5, 7.5);
+    this.wall3.setColor([0, 0, 1, 1]);
+    objs.push(this.wall3);
+    
+    this.wall4 = new Renderable();
+    this.wall4.getXform().setPosition(42, 50);
+    this.wall4.getXform().setSize(7.5, 5);
+    this.wall4.setColor([0, 0, 1, 1]);
+    objs.push(this.wall4);
+    
+    this.wall5 = new Renderable();
+    this.wall5.getXform().setPosition(42, 20);
+    this.wall5.getXform().setSize(9.5, 7.5);
+    this.wall5.setColor([0, 0, 1, 1]);
+    objs.push(this.wall5);
+    
+    this.wall6 = new Renderable();
+    this.wall6.getXform().setPosition(52, 20);
+    this.wall6.getXform().setSize(9.5, 7.5);
+    this.wall6.setColor([0, 0, 1, 1]);
+    objs.push(this.wall6);
+    
+    this.wall7 = new Renderable();
+    this.wall7.getXform().setPosition(62, 20);
+    this.wall7.getXform().setSize(9.5, 7.5);
+    this.wall7.setColor([0, 0, 1, 1]);
+    objs.push(this.wall7);
+    
+    this.wall8 = new Renderable();
+    this.wall8.getXform().setPosition(72, 20);
+    this.wall8.getXform().setSize(9.5, 7.5);
+    this.wall8.setColor([0, 0, 1, 1]);
+    objs.push(this.wall8);
+    
+    this.wall9 = new Renderable();
+    this.wall9.getXform().setPosition(82, 20);
+    this.wall9.getXform().setSize(9.5, 7.5);
+    this.wall9.setColor([0, 0, 1, 1]);
+    objs.push(this.wall9);
+    
+    this.wall10 = new Renderable();
+    this.wall10.getXform().setPosition(42, 60);
+    this.wall10.getXform().setSize(5, 7.5);
+    this.wall10.setColor([0, 0, 1, 1]);
+    objs.push(this.wall10);
+    
+    return objs;
 };

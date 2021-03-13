@@ -55,7 +55,7 @@ Raycast.prototype.update = function (headNode) {
 
 Raycast.prototype.checkHeadNodeIntercept = function (headNode) {
     if (headNode !== null) {
-        console.log(headNode.checkIntersection(this));
+        //console.log(headNode.checkIntersection(this));
         if (headNode.checkIntersection(this)) {
             var gOsIntercepted = [];
             this.interceptionHelper(headNode, gOsIntercepted);
@@ -65,7 +65,6 @@ Raycast.prototype.checkHeadNodeIntercept = function (headNode) {
     return null;
 };
 
-
 Raycast.prototype.interceptionHelper = function (node, gOsIntercepted) {
     //if (node !== null) {
     if (node.checkIntersection(this)) {
@@ -73,9 +72,9 @@ Raycast.prototype.interceptionHelper = function (node, gOsIntercepted) {
         if (node.hasChildren()) {
             this.interceptionHelper(node.getLeftChild(), gOsIntercepted);
             this.interceptionHelper(node.getRightChild(), gOsIntercepted);
-            console.log("in raycast update");
+            //console.log("in raycast update");
         } else {
-            console.log("are there children?: " + node.getLeftChild() + node.getRightChild());
+            //console.log("are there children?: " + node.getLeftChild() + node.getRightChild());
             this.checkGOsIntercepts(node, gOsIntercepted);
         }
     }
@@ -88,7 +87,7 @@ Raycast.prototype.hasChildren = function (node) {
 
 Raycast.prototype.checkGOsIntercepts = function (node, gOsIntercepted) {
     //console.log("checking for GOs interception");
-    console.log("node's GOs: " + node.getGameObjectsArray());
+    //console.log("node's GOs: " + node.getGameObjectsArray());
     for (var i = 0; i < node.getGameObjectsArray().length; i++) {
         var gameObj = node.getGameObjectsArray()[i];
         if (gameObj.checkIntersection(this)) {
