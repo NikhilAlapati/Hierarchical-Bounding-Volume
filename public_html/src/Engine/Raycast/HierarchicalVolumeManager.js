@@ -50,6 +50,7 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
             this.constructHierarchyHelper(Object.assign(objectsArray), this.headNode);
         }
         console.log("headNode GOs: " + this.headNode.getGameObjectsArray());
+        console.log("construction complete, all nodes: " + this.hierarchyNodesArray);
     }
     
 };
@@ -59,7 +60,7 @@ HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray)
 //       of GOs into two NEW nodes. Then find the positions and sizes of the nodes 
 //       after (this may be done on the node side of code (BoundingRaycastBox.js)).
 HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
-    // now see if there are more than three in the box, but the volume isnt too small
+    // now see if there are more than three in the box
     if (objectsArray.length > 3) {
         // split the GOs into two groups to assign to two children
         var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
@@ -84,8 +85,10 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         child2.getXform().setSize(newNode2Size[0], newNode2Size[1]);
         
         // asign children to the parent node
-        node.setLeftChild(child1);
-        node.setRightChild(child2);
+        node.setLeftChild(Object.assign(child1));
+        node.setRightChild(Object.assign(child2));
+        child1.setParent(node);
+        child2.setParent(node);
         this.hierarchyNodesArray.push(child1);
         this.hierarchyNodesArray.push(child2);
         
@@ -98,7 +101,16 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         // recurse into children
         this.constructHierarchyHelper(newNodeGOArrays[0], child1);
         this.constructHierarchyHelper(newNodeGOArrays[1], child2);
-    }
+        
+        //child1.getParent().clearGameObjectsArray();
+        /*child1.setLeftChild(null);
+        child1.setRightChild(null);
+        child2.setLeftChild(null);
+        child2.setRightChild(null);*/
+    } //else {
+        //node.setLeftChild(null);
+        //node.setRightChild(null);
+    //}
 };
 
 // move the GOs from the passed array to a new array for a new node
@@ -268,3 +280,4 @@ HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, nod
 HierarchicalVolumeManager.prototype.getHeadNode = function () { return this.headNode; };
 HierarchicalVolumeManager.prototype.getHierarchyArray = function () {return this.hierarchyNodesArray; };
 HierarchicalVolumeManager.prototype.getChildrenOfParent = function (node) { return [node.getLeftChild(), node.getRightChild()]; };
+HierarchicalVolumeManager.prototype.parentIsHeadNode = function (node) { return node.getParent() === this.headNode; };

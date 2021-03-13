@@ -27,6 +27,7 @@ function BoundingRaycastBox(centerPos, w, h) {
     this.myBoundingBox = new BoundingBox(centerPos, w, h);
 
     // node properties
+    this.parent = null;
     this.leftChild = null;
     this.rightChild = null;
     this.myGameObjectsArray = [];
@@ -116,11 +117,15 @@ BoundingRaycastBox.prototype.checkIntersection = function (raycast) {
 }; 
 
 BoundingRaycastBox.prototype.getCorners = function () { return this.corners; };
+BoundingRaycastBox.prototype.getParent = function () { return this.parent; };
+BoundingRaycastBox.prototype.setParent = function (node) { this.parent = Object.assign(node); };
 BoundingRaycastBox.prototype.getLeftChild = function () { return this.leftChild; };
 BoundingRaycastBox.prototype.getRightChild = function () { return this.rightChild; };
-BoundingRaycastBox.prototype.setLeftChild = function (child) { this.leftChild = child; };
-BoundingRaycastBox.prototype.setRightChild = function (child) { this.rightChild = child; };
+BoundingRaycastBox.prototype.setLeftChild = function (node) { this.leftChild = node; };
+BoundingRaycastBox.prototype.setRightChild = function (node) { this.rightChild = node; };
 BoundingRaycastBox.prototype.getGameObjectsArray = function () { return this.myGameObjectsArray; };
+BoundingRaycastBox.prototype.clearGameObjectsArray = function () { this.myGameObjectsArray = []; };
+BoundingRaycastBox.prototype.hasChildren = function () { return this.getLeftChild() !== null; };
 
 BoundingRaycastBox.prototype.setGameObjectsArray = function (gameObjectsArray) { 
     console.log("myGOs array: " + gameObjectsArray);
