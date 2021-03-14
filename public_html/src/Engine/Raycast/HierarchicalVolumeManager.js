@@ -223,9 +223,3 @@ HierarchicalVolumeManager.prototype.getHeadNode = function () {
 HierarchicalVolumeManager.prototype.getHierarchyArray = function () {
     return this.hierarchyNodesArray;
 };
-HierarchicalVolumeManager.prototype.getChildrenOfParent = function (node) {
-    return [node.getLeftChild(), node.getRightChild()];
-};
-HierarchicalVolumeManager.prototype.parentIsHeadNode = function (node) {
-    return node.getParent() === this.headNode;
-};
