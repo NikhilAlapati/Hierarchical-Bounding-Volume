@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-
+// Given an array of objects it creates a hierarchy of game objects and bounding boxes
 function HierarchicalVolumeManager(objectsArray) {
     this.mObjs = objectsArray;
     this.headNode = null;
@@ -13,77 +13,45 @@ function HierarchicalVolumeManager(objectsArray) {
     this.constructHierarchy(objectsArray);
 }
 
-// Gabe: testing how to build a hierarchy
+// Creates a hierarchy recursively given an object of game objects
 HierarchicalVolumeManager.prototype.constructHierarchy = function (objectsArray) {
-    // read through all the positions of the gameobjects
-    // make an average coordinate position of all the gameobjects
-    // make an sum distance from the WCOrigin of x and y values
-    // if distanceX > distanceY, make a split on the x axis
-    // if distanceX < distanceY, make a split on the y axis
-
-    // Temporary rules to build volumes:
-    // 1. The number of objects in any one volume is greater than 3
-    // 2. Do not need to split a volume to two if there is a volume 
-    //    with more than 3 objects, but the area of the volume is
-    //    <INSERT ARBITRARY SMALL AREA SIZE>.
-
-    // Create 1 volume that covers all the gameobjects
-    // Check the rules listed above
-    // if rules fail, create new volume nodes to add to the BVH
-    // keep creating nodes until each node satisfies the rules above
-
-    // create 1 node that covers all gameobjects
-    // first check the positions of all gameobjects to determine the size and location
-    //this.insertNode(new BoundingRaycastBox([40, 50], 4, 4)); // INCOMPLETE, replace with helper functions
-    
-    // Create the head node
     if (objectsArray.length > 0) {
-        console.log("More than 0 objs");
         var headNodeSize = this.findNewNodeSize(objectsArray);
         this.headNode = new BoundingRaycastBox(this.findNewNodePosition(objectsArray), headNodeSize[0], headNodeSize[1]);
         this.headNode.setGameObjectsArray(objectsArray);
-        
+
         this.hierarchyNodesArray = [this.headNode];
         // construct the rest of the hierarchy
         if (objectsArray.length > 3) {
-            console.log("More than 3 objs");
             this.constructHierarchyHelper(Object.assign(objectsArray), this.headNode);
         }
-        console.log("headNode GOs: " + this.headNode.getGameObjectsArray());
-        console.log("construction complete, all nodes: " + this.hierarchyNodesArray);
     }
-    
 };
 
-// Gabe: helper methods to look at all boundaries and create more accordingly
-// Gabe: take a node, see if it breaks the rules above. create and split the array
-//       of GOs into two NEW nodes. Then find the positions and sizes of the nodes 
-//       after (this may be done on the node side of code (BoundingRaycastBox.js)).
+// Helper function for the constructHierarchy to help with the recursive creation
 HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objectsArray, node) {
     // now see if there are more than three in the box
     if (objectsArray.length > 3) {
         // split the GOs into two groups to assign to two children
         var averageGOsPosition = this.findAverageGOsPosition(objectsArray, node);
         var newNodeGOArrays = this.moveGOsToNewArrays(objectsArray, averageGOsPosition);
-        console.log("newNodeGOArrays[0]: " + newNodeGOArrays[0]);// + " || " + newNodeGOArrays[1]);
-        console.log("newNodeGOArrays[1]: " + newNodeGOArrays[1]);
-        
+
         // create the children nodes
         var child1 = new BoundingRaycastBox([0, 0], 0, 0);
         var child2 = new BoundingRaycastBox([0, 0], 0, 0);
-        
+
         // find the children's WC positions
         var newNode1Position = this.findNewNodePosition(newNodeGOArrays[0], child1);
         var newNode2Position = this.findNewNodePosition(newNodeGOArrays[1], child2);
         child1.getXform().setPosition(newNode1Position[0], newNode1Position[1]);
         child2.getXform().setPosition(newNode2Position[0], newNode2Position[1]);
-        
+
         // find the children's sizes
         var newNode1Size = this.findNewNodeSize(newNodeGOArrays[0], child1);
         var newNode2Size = this.findNewNodeSize(newNodeGOArrays[1], child2);
         child1.getXform().setSize(newNode1Size[0], newNode1Size[1]);
         child2.getXform().setSize(newNode2Size[0], newNode2Size[1]);
-        
+
         // asign children to the parent node
         node.setLeftChild(Object.assign(child1));
         node.setRightChild(Object.assign(child2));
@@ -91,31 +59,20 @@ HierarchicalVolumeManager.prototype.constructHierarchyHelper = function (objects
         child2.setParent(node);
         this.hierarchyNodesArray.push(child1);
         this.hierarchyNodesArray.push(child2);
-        
+
         // asign GOs to children nodes
         child1.setGameObjectsArray(newNodeGOArrays[0]);
         child2.setGameObjectsArray(newNodeGOArrays[1]);
-        console.log("child1: " + child1.getGameObjectsArray());
-        console.log("child2: " + child2.getGameObjectsArray());
-        
+
         // recurse into children
         this.constructHierarchyHelper(newNodeGOArrays[0], child1);
         this.constructHierarchyHelper(newNodeGOArrays[1], child2);
-        
-        //child1.getParent().clearGameObjectsArray();
-        /*child1.setLeftChild(null);
-        child1.setRightChild(null);
-        child2.setLeftChild(null);
-        child2.setRightChild(null);*/
-    } //else {
-        //node.setLeftChild(null);
-        //node.setRightChild(null);
-    //}
+    }
 };
 
 // move the GOs from the passed array to a new array for a new node
 HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray, averageGOsPosition) {
-    
+
     var newNode1GOArray = [];
     var newNode2GOArray = [];
     var tempArrayStorage = [newNode1GOArray, newNode2GOArray];
@@ -135,8 +92,7 @@ HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray,
                 // remove it from the objectsarray and put it in the newNodeGOArray
                 newNode1GOArray.push(objectsArray[i]);
                 //objectsArray.splice(i, 1);
-            }
-            else {
+            } else {
                 // remove it from the objectsarray and put it in the newNodeGOArray
                 newNode2GOArray.push(objectsArray[i]);
                 //objectsArray.splice(i, 1);
@@ -146,8 +102,7 @@ HierarchicalVolumeManager.prototype.moveGOsToNewArrays = function (objectsArray,
     return tempArrayStorage;
 };
 
-// Gabe: this is not an accurate function name, this is finding the which direction
-//       to split and where the cutoff coordinate is for splitting GOs into a new array
+// Finds the average position of the game objects in the array so that the program is able to create new bounding boxes
 HierarchicalVolumeManager.prototype.findAverageGOsPosition = function (objectsArray, node) {
     var distanceX = 0;
     var distanceY = 0;
@@ -189,7 +144,7 @@ HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray
     var furthestLowObj = objectsArray[0];
     var furthestLeftObj = objectsArray[0];
     var furthestRightObj = objectsArray[0];
-    
+
     //var cumulativeWCPosition = [0, 0];
     for (var i = 0; i < objectsArray.length; i++) {
         /*var objPos = objectsArray[i].getXform().getPosition();
@@ -197,52 +152,52 @@ HierarchicalVolumeManager.prototype.findNewNodePosition = function (objectsArray
         var yPos = objPos[1];
         cumulativeWCPosition[0] += xPos;
         cumulativeWCPosition[1] += yPos;*/
-        
-        if ((objectsArray[i].getXform().getXPos() + (objectsArray[i].getXform().getWidth()/2)) >
-            (furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth()/2))) {
+
+        if ((objectsArray[i].getXform().getXPos() + (objectsArray[i].getXform().getWidth() / 2)) >
+            (furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth() / 2))) {
             furthestRightObj = objectsArray[i];
         }
-        if ((objectsArray[i].getXform().getXPos() - (objectsArray[i].getXform().getWidth()/2)) <
-            (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2))) {
+        if ((objectsArray[i].getXform().getXPos() - (objectsArray[i].getXform().getWidth() / 2)) <
+            (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth() / 2))) {
             furthestLeftObj = objectsArray[i];
         }
-        
-        if ((objectsArray[i].getXform().getYPos() + (objectsArray[i].getXform().getHeight()/2)) >
-            (furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight()/2))) {
+
+        if ((objectsArray[i].getXform().getYPos() + (objectsArray[i].getXform().getHeight() / 2)) >
+            (furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight() / 2))) {
             furthestHighObj = objectsArray[i];
         }
-        if ((objectsArray[i].getXform().getYPos() - (objectsArray[i].getXform().getHeight()/2)) <
-            (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2))) {
+        if ((objectsArray[i].getXform().getYPos() - (objectsArray[i].getXform().getHeight() / 2)) <
+            (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight() / 2))) {
             furthestLowObj = objectsArray[i];
         }
     }
     var averageWCPosition = [0, 0];
     //averageWCPosition[0] = cumulativeWCPosition[0] / objectsArray.length;
-    averageWCPosition[0] = (((furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth()/2)) - 
-                           (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2))) / 2) +
-                           (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth()/2));
-    
+    averageWCPosition[0] = (((furthestRightObj.getXform().getXPos() + (furthestRightObj.getXform().getWidth() / 2)) -
+        (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth() / 2))) / 2) +
+        (furthestLeftObj.getXform().getXPos() - (furthestLeftObj.getXform().getWidth() / 2));
+
     //averageWCPosition[1] = cumulativeWCPosition[1] / objectsArray.length;
-    averageWCPosition[1] = (((furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight()/2)) - 
-                           (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2))) / 2) +
-                           (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight()/2));
+    averageWCPosition[1] = (((furthestHighObj.getXform().getYPos() + (furthestHighObj.getXform().getHeight() / 2)) -
+        (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight() / 2))) / 2) +
+        (furthestLowObj.getXform().getYPos() - (furthestLowObj.getXform().getHeight() / 2));
     return averageWCPosition;
 };
 
 // find the size to fit the objects inside of the volume node
 HierarchicalVolumeManager.prototype.findNewNodeSize = function (objectsArray) {
     var xform = objectsArray[0].getXform();
-    var left = xform.getXPos() - xform.getWidth()/2;
-    var right = xform.getXPos() + xform.getWidth()/2;
-    var top = xform.getYPos() + xform.getHeight()/2;
-    var bottom = xform.getYPos() - xform.getHeight()/2;
-    
+    var left = xform.getXPos() - xform.getWidth() / 2;
+    var right = xform.getXPos() + xform.getWidth() / 2;
+    var top = xform.getYPos() + xform.getHeight() / 2;
+    var bottom = xform.getYPos() - xform.getHeight() / 2;
+
     for (var i = 0; i < objectsArray.length; i++) {
         xform = objectsArray[i].getXform();
-        cLeft = xform.getXPos() - xform.getWidth()/2;
-        cRight = xform.getXPos() + xform.getWidth()/2;
-        cTop = xform.getYPos() + xform.getHeight()/2;
-        cBottom = xform.getYPos() - xform.getHeight()/2;
+        cLeft = xform.getXPos() - xform.getWidth() / 2;
+        cRight = xform.getXPos() + xform.getWidth() / 2;
+        cTop = xform.getYPos() + xform.getHeight() / 2;
+        cBottom = xform.getYPos() - xform.getHeight() / 2;
         if (cLeft < left) {
             left = cLeft;
         }
@@ -256,7 +211,7 @@ HierarchicalVolumeManager.prototype.findNewNodeSize = function (objectsArray) {
             bottom = cBottom;
         }
     }
-    
+
     var solutionWidth = Math.abs(right - left);
     var solutionHeight = Math.abs(top - bottom);
     return [solutionWidth, solutionHeight];
@@ -277,7 +232,15 @@ HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, nod
 
 };
 
-HierarchicalVolumeManager.prototype.getHeadNode = function () { return this.headNode; };
-HierarchicalVolumeManager.prototype.getHierarchyArray = function () {return this.hierarchyNodesArray; };
-HierarchicalVolumeManager.prototype.getChildrenOfParent = function (node) { return [node.getLeftChild(), node.getRightChild()]; };
-HierarchicalVolumeManager.prototype.parentIsHeadNode = function (node) { return node.getParent() === this.headNode; };
+HierarchicalVolumeManager.prototype.getHeadNode = function () {
+    return this.headNode;
+};
+HierarchicalVolumeManager.prototype.getHierarchyArray = function () {
+    return this.hierarchyNodesArray;
+};
+HierarchicalVolumeManager.prototype.getChildrenOfParent = function (node) {
+    return [node.getLeftChild(), node.getRightChild()];
+};
+HierarchicalVolumeManager.prototype.parentIsHeadNode = function (node) {
+    return node.getParent() === this.headNode;
+};

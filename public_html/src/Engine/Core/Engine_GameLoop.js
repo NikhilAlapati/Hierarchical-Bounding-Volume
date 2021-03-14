@@ -8,7 +8,7 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-var gEngine = gEngine || { };
+var gEngine = gEngine || {};
 
 gEngine.GameLoop = (function () {
     var kFPS = 60;          // Frames per second
@@ -29,7 +29,9 @@ gEngine.GameLoop = (function () {
     var _runLoop = function () {
         if (mIsLoopRunning) {
             // Step A: set up for next call to _runLoop and update input!
-            requestAnimationFrame(function () { _runLoop.call(mMyGame); });
+            requestAnimationFrame(function () {
+                _runLoop.call(mMyGame);
+            });
 
             // Step B: compute how much time has elapsed since we last RunLoop was executed
             var currentTime = Date.now();
@@ -63,7 +65,9 @@ gEngine.GameLoop = (function () {
         mIsLoopRunning = true;
 
         // Step C: request _runLoop to start when loading is done
-        requestAnimationFrame(function () { _runLoop.call(mMyGame); });
+        requestAnimationFrame(function () {
+            _runLoop.call(mMyGame);
+        });
     };
 
     var start = function (myGame) {
@@ -79,11 +83,11 @@ gEngine.GameLoop = (function () {
     var stop = function () {
         mIsLoopRunning = false;
     };
-    
+
     var getUpdateIntervalInSeconds = function () {
         return kFrameTime;
     };
-    
+
     var mPublic = {
         start: start,
         stop: stop,
