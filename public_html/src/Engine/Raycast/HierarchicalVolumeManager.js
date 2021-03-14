@@ -217,21 +217,6 @@ HierarchicalVolumeManager.prototype.findNewNodeSize = function (objectsArray) {
     return [solutionWidth, solutionHeight];
 };
 
-// to insert nodes into the BVH
-HierarchicalVolumeManager.prototype.insertNode = function (node) {
-    if (this.headNode === null) {
-        this.headNode = node;
-        this.hierarchyDepth++;
-    } else {
-        this.insertNodeHelper(this.headNode, node);
-    }
-};
-
-// insert nodes into the BVH helper function
-HierarchicalVolumeManager.prototype.insertNodeHelper = function (parentNode, node) {
-
-};
-
 HierarchicalVolumeManager.prototype.getHeadNode = function () {
     return this.headNode;
 };
