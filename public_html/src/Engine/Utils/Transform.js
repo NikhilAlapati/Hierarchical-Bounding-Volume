@@ -15,7 +15,7 @@ function Transform() {
     this.mZ = 0.0;                          // must be a positive number, larger is closer to eye
     this.mRotationInRad = 0.0;              // in radians!
     
-    // Gabe: variables for checkng raycast interception
+    // Variables for checkng raycast intersection
     this.halfHeight = this.getHeight()/2;
     this.halfWidth = this.getWidth()/2;
     let position = this.getPosition();
