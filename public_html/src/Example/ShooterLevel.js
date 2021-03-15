@@ -75,7 +75,7 @@ ShooterLevel.prototype.initialize = function () {
     //this.turret.getXform().setPosition(90, 40);
     //this.turret.getXform().setSize(6, 6);
 
-    this.raycast = new Raycast(this.player.getXform().getPosition(), [this.player.getXform().getXPos() + 90, 40]);
+    this.raycast = new Raycast(this.player.getXform().getPosition(), [this.player.getXform().getXPos() + 200, 40]);
 
     this.gOsArray = this.makeBVHObjects();
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
@@ -121,6 +121,7 @@ ShooterLevel.prototype.update = function () {
     //this.raycastBound.update();
     //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
     this.raycast.setStartPoint(this.player.getXform().getPosition());
+    this.raycast.setEndPoint([this.player.getXform().getXPos() + 200, this.player.getXform().getYPos()]);
     for (var i = 0; i < this.gOsArray.length; i++) {
         this.gOsArray[i].setColor([0, 0, 1, 1]);
     }
@@ -130,7 +131,6 @@ ShooterLevel.prototype.update = function () {
             this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
         }
     }
-
 };
 
 ShooterLevel.prototype.lookAt = function (target, looker) {
