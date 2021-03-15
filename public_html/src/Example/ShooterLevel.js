@@ -23,8 +23,7 @@ function ShooterLevel() {
     this.wall = null;
     this.raycast = null;
     this.player = null;
-    this.frameTimer = null;
-    this.hideTimeLength = null;
+    this.drawNodes = null;
 
     //this.raycastBound = null;
     this.raycastHitting = false;
@@ -38,9 +37,6 @@ function ShooterLevel() {
     this.wall5 = null;
     this.wall6 = null;
     this.wall7 = null;
-    this.wall8 = null;
-    this.wall9 = null;
-    this.wall10 = null;
     this.gOsArray = null;
     this.gOInterceptedArray = null;
 }
@@ -62,8 +58,7 @@ ShooterLevel.prototype.unloadScene = function () {
 };
 
 ShooterLevel.prototype.initialize = function () {
-    this.frameTimer = 0;
-    this.hideTimeLength = 0;
+    this.drawNodes = false;
     
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
@@ -84,6 +79,12 @@ ShooterLevel.prototype.initialize = function () {
     this.gOsArray = this.makeBVHObjects();
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
+    
+    window.addEventListener('keydown', function(e) {
+        if(e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+        }
+    });
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -97,7 +98,7 @@ ShooterLevel.prototype.draw = function () {
 
     // Gabe: draw BVH
     //this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
-    for (var i = 0; i < this.BoundingVolumeManager.getHierarchyArray().length; i++) {
+    for (var i = 0; this.drawNodes && i < this.BoundingVolumeManager.getHierarchyArray().length; i++) {
         this.BoundingVolumeManager.getHierarchyArray()[i].draw(this.mCamera);
     }
 
@@ -141,10 +142,8 @@ ShooterLevel.prototype.update = function () {
             this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
         }
     }
-    if (gEngine.Input.isButtonClicked(0)) {
-        console.log("Mouse 1 Clicked");
-        console.log("intercepted objs: " + this.gOInterceptedArray);
-        for (var i = 0; i < this.gOInterceptedArray.length; i++) {
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
+        for (var i = 0;this.gOInterceptedArray !== null && i < this.gOInterceptedArray.length; i++) {
             for (var j = 0; j < this.gOsArray.length; j++) {
                 if (this.gOInterceptedArray[i] === this.gOsArray[j]) {
                     this.gOInterceptedArray[i] = null;
@@ -154,6 +153,9 @@ ShooterLevel.prototype.update = function () {
         }
     }
     
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
+        this.drawNodes = !this.drawNodes;
+    }
     this.checkIfAllGOsDestroyed(this.gOsArray);
 };
 
@@ -172,7 +174,6 @@ ShooterLevel.prototype.checkIfAllGOsDestroyed = function (gOsArray) {
 };
 
 ShooterLevel.prototype.spawnNewGOs = function () {
-    console.log("All Destroyed");
     this.gOsArray = this.makeBVHObjects();
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
@@ -186,65 +187,66 @@ ShooterLevel.prototype.hideForSeconds = function (objsArray) {
 
 ShooterLevel.prototype.makeBVHObjects = function () {
     var objs = [];
+    
+var randomNum = Math.random() * 20 - 10;
+var randSize = Math.random() * 10;
+    
     this.wall1 = new Renderable();
-    this.wall1.getXform().setPosition(70, 30);
+    this.wall1.getXform().setPosition(70 + randomNum, 30 + randomNum);
     this.wall1.getXform().setSize(6, 6);
     this.wall1.setColor([0, 0, 1, 1]);
     objs.push(this.wall1);
 
+var randomNum = Math.random() * 20 - 10;
+
     this.wall2 = new Renderable();
-    this.wall2.getXform().setPosition(75, 55);
-    this.wall2.getXform().setSize(3.5, 3.5);
+    this.wall2.getXform().setPosition(75 + randomNum, 50 + randomNum);
+    this.wall2.getXform().setSize(3.5 + randSize, 3.5 + randSize);
     this.wall2.setColor([0, 0, 1, 1]);
     objs.push(this.wall2);
 
+var randomNum = Math.random() * 20 - 10;
+
     this.wall3 = new Renderable();
-    this.wall3.getXform().setPosition(72, 40);
+    this.wall3.getXform().setPosition(72 + randomNum, 40 + randomNum);
     this.wall3.getXform().setSize(7.5, 7.5);
     this.wall3.setColor([0, 0, 1, 1]);
     objs.push(this.wall3);
 
-    /*this.wall4 = new Renderable();
-    this.wall4.getXform().setPosition(42, 50);
-    this.wall4.getXform().setSize(7.5, 5);
+var randomNum = Math.random() * 20 - 10;
+
+    this.wall4 = new Renderable();
+    this.wall4.getXform().setPosition(62 + randomNum, 50 + randomNum);
+    this.wall4.getXform().setSize(7.5, 5 + randSize);
     this.wall4.setColor([0, 0, 1, 1]);
     objs.push(this.wall4);
 
+var randomNum = Math.random() * 20 - 10;
+var randSize = Math.random() * 10;
+
     this.wall5 = new Renderable();
-    this.wall5.getXform().setPosition(42, 20);
-    this.wall5.getXform().setSize(9.5, 7.5);
+    this.wall5.getXform().setPosition(62 + randomNum, 20 + randomNum);
+    this.wall5.getXform().setSize(9.5 + randSize, 7.5);
     this.wall5.setColor([0, 0, 1, 1]);
     objs.push(this.wall5);
 
+var randomNum = Math.random() * 20 - 10;
+var randSize = Math.random() * 10;
+
     this.wall6 = new Renderable();
-    this.wall6.getXform().setPosition(52, 20);
-    this.wall6.getXform().setSize(9.5, 7.5);
+    this.wall6.getXform().setPosition(62 + randomNum, 20 + randomNum);
+    this.wall6.getXform().setSize(9.5, 7.5 + randSize);
     this.wall6.setColor([0, 0, 1, 1]);
     objs.push(this.wall6);
 
+var randomNum = Math.random() * 20 - 10;
+var randSize = Math.random() * 10;
+
     this.wall7 = new Renderable();
-    this.wall7.getXform().setPosition(62, 20);
-    this.wall7.getXform().setSize(9.5, 7.5);
+    this.wall7.getXform().setPosition(50 + randomNum, 45 + randomNum);
+    this.wall7.getXform().setSize(3.5 + randSize, 4.5 + randSize);
     this.wall7.setColor([0, 0, 1, 1]);
     objs.push(this.wall7);
-
-    this.wall8 = new Renderable();
-    this.wall8.getXform().setPosition(72, 23);
-    this.wall8.getXform().setSize(9.5, 7.5);
-    this.wall8.setColor([0, 0, 1, 1]);
-    objs.push(this.wall8);
-
-    this.wall9 = new Renderable();
-    this.wall9.getXform().setPosition(82, 20);
-    this.wall9.getXform().setSize(9.5, 7.5);
-    this.wall9.setColor([0, 0, 1, 1]);
-    objs.push(this.wall9);
-
-    this.wall10 = new Renderable();
-    this.wall10.getXform().setPosition(42, 60);
-    this.wall10.getXform().setSize(5, 7.5);
-    this.wall10.setColor([0, 0, 1, 1]);
-    objs.push(this.wall10);*/
 
     return objs;
 };
