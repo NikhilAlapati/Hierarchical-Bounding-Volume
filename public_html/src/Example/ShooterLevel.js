@@ -24,6 +24,8 @@ function ShooterLevel() {
     this.raycast = null;
     this.player = null;
     this.drawNodes = null;
+    this.textDisplay = null;
+    this.score = null;
 
     //this.raycastBound = null;
     this.raycastHitting = false;
@@ -59,6 +61,11 @@ ShooterLevel.prototype.unloadScene = function () {
 
 ShooterLevel.prototype.initialize = function () {
     this.drawNodes = false;
+    
+    this.score = 0;
+    this.textDisplay = new FontRenderable("Targets Hit: " + this.score);
+    this.textDisplay.getXform().setPosition(1, 12);
+    this.textDisplay.getXform().setSize(20,3);
     
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
@@ -111,12 +118,13 @@ ShooterLevel.prototype.draw = function () {
     }
 
     this.raycast.draw(this.mCamera);
+    this.textDisplay.draw(this.mCamera);
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 ShooterLevel.prototype.update = function () {
-    //this.hideTimeLength++;
+    this.textDisplay.setText("Targets Hit: " + this.score);
     
     this.player.update();
     //this.lookAt(this.player.getXform(), this.turret.getXform());
@@ -138,17 +146,17 @@ ShooterLevel.prototype.update = function () {
         }
     }
     if (this.gOInterceptedArray !== null && this.gOInterceptedArray.length === 0) { 
-        console.log("is null");
         this.raycast.setRayColor([1, 0, 0, 1]); 
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
-        for (var i = 0;this.gOInterceptedArray !== null && i < this.gOInterceptedArray.length; i++) {
+        for (var i = 0; this.gOInterceptedArray !== null && i < this.gOInterceptedArray.length; i++) {
             for (var j = 0; j < this.gOsArray.length; j++) {
                 if (this.gOInterceptedArray[i] === this.gOsArray[j]) {
                     this.gOInterceptedArray[i] = null;
                     this.gOsArray[j] = null;
                 }
             }
+            this.score++;
         }
     }
     

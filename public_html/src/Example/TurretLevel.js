@@ -106,7 +106,9 @@ TurretLevel.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
 
     this.mCamera.setupViewProjection();
-    this.player.draw(this.mCamera);
+    if (this.player !== null) {
+        this.player.draw(this.mCamera);
+    }
     //this.raycastBound.draw(this.mCamera);
 
     // Gabe: draw BVH
@@ -137,13 +139,21 @@ TurretLevel.prototype.update = function () {
     }
     
     
+    if (this.player !== null) {
+        this.player.update();
+    }
     
-    this.player.update();
-    this.lookAt(this.player.getXform(), this.turret.getXform());
+    if (this.player !== null) {
+        this.lookAt(this.player.getXform(), this.turret.getXform());
+    }
+    
     this.turret.update();
     //this.raycastBound.update();
     //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
-    this.raycast.setEndPoint(this.player.getXform().getPosition());
+    if (this.player !== null) {
+        this.raycast.setEndPoint(this.player.getXform().getPosition());
+    }
+    
     for (var i = 0; this.gOsArray[i] !== null && i < this.gOsArray.length; i++) {
         this.gOsArray[i].setColor([0, 0, 1, 1]);
     }
@@ -160,11 +170,16 @@ TurretLevel.prototype.update = function () {
         this.drawNodes = !this.drawNodes;
     }
     
-    if (this.secondsCountDown < 0) {
-        this.secondsCountDown = 6;
-        if (this.gOInterceptedArray === null || this.gOInterceptedArray.length === 0) {
-            
+    if (!this.playerLost) {
+        if (this.secondsCountDown < 0) {
+            this.secondsCountDown = 6;
+            if (this.gOInterceptedArray === null || this.gOInterceptedArray.length === 0) {
+                this.playerLost = true;
+            }
         }
+    } else {
+        this.player = null;
+        this.textDisplay.setText("You Lost: You Were Hit by Turret");
     }
 };
 
