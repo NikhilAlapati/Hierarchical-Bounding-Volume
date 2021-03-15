@@ -86,7 +86,7 @@ Raycast.prototype.hasChildren = function (node) {
 Raycast.prototype.checkGOsIntercepts = function (node, gOsIntercepted) {
     for (var i = 0; i < node.getGameObjectsArray().length; i++) {
         var gameObj = node.getGameObjectsArray()[i];
-        if (gameObj.checkIntersection(this)) {
+        if (gameObj !== null && gameObj.checkIntersection(this)) {
             gOsIntercepted.push(gameObj);
         }
     }

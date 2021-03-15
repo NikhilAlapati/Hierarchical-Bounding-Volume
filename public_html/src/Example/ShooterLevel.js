@@ -23,6 +23,8 @@ function ShooterLevel() {
     this.wall = null;
     this.raycast = null;
     this.player = null;
+    this.frameTimer = null;
+    this.hideTimeLength = null;
 
     //this.raycastBound = null;
     this.raycastHitting = false;
@@ -60,7 +62,9 @@ ShooterLevel.prototype.unloadScene = function () {
 };
 
 ShooterLevel.prototype.initialize = function () {
-
+    this.frameTimer = 0;
+    this.hideTimeLength = 0;
+    
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
         100,                       // width of camera
@@ -100,7 +104,9 @@ ShooterLevel.prototype.draw = function () {
     //this.wall.draw(this.mCamera);
     // Gabe: draw all walls
     for (var i = 0; i < this.gOsArray.length; i++) {
-        this.gOsArray[i].draw(this.mCamera);
+        if (this.gOsArray[i] !== null) {
+            this.gOsArray[i].draw(this.mCamera);
+        }
     }
 
     //this.turret.draw(this.mCamera);
@@ -115,6 +121,8 @@ ShooterLevel.prototype.draw = function () {
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 ShooterLevel.prototype.update = function () {
+    //this.hideTimeLength++;
+    
     this.player.update();
     //this.lookAt(this.player.getXform(), this.turret.getXform());
     //this.turret.update();
@@ -123,7 +131,9 @@ ShooterLevel.prototype.update = function () {
     this.raycast.setStartPoint(this.player.getXform().getPosition());
     this.raycast.setEndPoint([this.player.getXform().getXPos() + 200, this.player.getXform().getYPos()]);
     for (var i = 0; i < this.gOsArray.length; i++) {
-        this.gOsArray[i].setColor([0, 0, 1, 1]);
+        if (this.gOsArray[i] !== null) {
+            this.gOsArray[i].setColor([0, 0, 1, 1]);
+        }
     }
     this.gOInterceptedArray = this.raycast.update(this.mHeadNode);
     if (this.gOInterceptedArray !== null) {
@@ -131,26 +141,47 @@ ShooterLevel.prototype.update = function () {
             this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
         }
     }
+    if (gEngine.Input.isButtonClicked(0)) {
+        console.log("Mouse 1 Clicked");
+        console.log("intercepted objs: " + this.gOInterceptedArray);
+        for (var i = 0; i < this.gOInterceptedArray.length; i++) {
+            for (var j = 0; j < this.gOsArray.length; j++) {
+                if (this.gOInterceptedArray[i] === this.gOsArray[j]) {
+                    this.gOInterceptedArray[i] = null;
+                    this.gOsArray[j] = null;
+                }
+            }
+        }
+    }
+    
+    this.checkIfAllGOsDestroyed(this.gOsArray);
 };
 
-ShooterLevel.prototype.lookAt = function (target, looker) {
-    var tarX = target.getXPos();
-    var tarY = target.getYPos();
-    var lookX = looker.getXPos();
-    var lookY = looker.getYPos();
-    var nCur = [0, 1];
-    var nTarX = (tarX - lookX);
-    var nTarY = (tarY - lookY);
-    var magnitude = Math.sqrt((nTarX * nTarX) + (nTarY * nTarY));
-    var nTar = [nTarX / magnitude, nTarY / magnitude];
-    var dot = this.dotProduct(nCur, nTar);
-    var angle = Math.acos(dot);
-    looker.setRotationInRad(angle);
+ShooterLevel.prototype.checkIfAllGOsDestroyed = function (gOsArray) {
+    var allDestroyed = true;
+    if (gOsArray.length !== 0) {
+        for (var i = 0; i < gOsArray.length; i++) {
+            if (gOsArray[i] !== null) {
+                allDestroyed = false;
+            }
+        }
+    }
+    if (allDestroyed) {
+        this.spawnNewGOs();
+    }
 };
 
-ShooterLevel.prototype.dotProduct = function (vec1, vec2) {
-    var dot = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
-    return dot(vec1, vec2);
+ShooterLevel.prototype.spawnNewGOs = function () {
+    console.log("All Destroyed");
+    this.gOsArray = this.makeBVHObjects();
+    this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
+    this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
+};
+
+ShooterLevel.prototype.hideForSeconds = function (objsArray) {
+    for (var i = 0; i < objsArray.length; i++) {
+        
+    }
 };
 
 ShooterLevel.prototype.makeBVHObjects = function () {
