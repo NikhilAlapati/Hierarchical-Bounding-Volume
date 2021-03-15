@@ -81,7 +81,7 @@ ShooterLevel.prototype.initialize = function () {
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
     
     window.addEventListener('keydown', function(e) {
-        if(e.keyCode == 32 && e.target == document.body) {
+        if(e.keyCode === 32 && e.target === document.body) {
             e.preventDefault();
         }
     });
@@ -110,12 +110,6 @@ ShooterLevel.prototype.draw = function () {
         }
     }
 
-    //this.turret.draw(this.mCamera);
-    if (this.gOInterceptedArray !== null) {
-        this.raycast.setRayColor([1, 0, 0, 1]);
-    } else {
-        this.raycast.setRayColor([0, 1, 0, 1]);
-    }
     this.raycast.draw(this.mCamera);
 };
 
@@ -138,9 +132,14 @@ ShooterLevel.prototype.update = function () {
     }
     this.gOInterceptedArray = this.raycast.update(this.mHeadNode);
     if (this.gOInterceptedArray !== null) {
+        this.raycast.setRayColor([1, 0, 0, 1]);
         for (var i = 0; i < this.gOInterceptedArray.length; i++) {
             this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
         }
+    }
+    if (this.gOInterceptedArray !== null && this.gOInterceptedArray.length === 0) { 
+        console.log("is null");
+        this.raycast.setRayColor([1, 0, 0, 1]); 
     }
     if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
         for (var i = 0;this.gOInterceptedArray !== null && i < this.gOInterceptedArray.length; i++) {

@@ -23,6 +23,11 @@ function TurretLevel() {
     this.wall = null;
     this.raycast = null;
     this.player = null;
+    this.drawNodes = null;
+    this.textDisplay = null;
+    this.secondsCountDown = null;
+    this.frameCounter = null;
+    this.playerLost = null;
 
     //this.raycastBound = null;
     this.raycastHitting = false;
@@ -60,7 +65,14 @@ TurretLevel.prototype.unloadScene = function () {
 };
 
 TurretLevel.prototype.initialize = function () {
-
+    this.playerLost = false;
+    this.frameCounter = 0;
+    this.secondsCountDown = 6;
+    this.textDisplay = new FontRenderable("HIDE: Turret Shoots in " + this.secondsCountDown);
+    this.textDisplay.getXform().setPosition(1, 12);
+    this.textDisplay.getXform().setSize(20,3);
+    
+    this.drawNodes = false;
     this.mCamera = new Camera(
         vec2.fromValues(50, 37.5), // position of the camera
         100,                       // width of camera
@@ -80,6 +92,12 @@ TurretLevel.prototype.initialize = function () {
     this.gOsArray = this.makeBVHObjects();
     this.BoundingVolumeManager = new HierarchicalVolumeManager(this.gOsArray);
     this.mHeadNode = this.BoundingVolumeManager.getHeadNode();
+    
+    window.addEventListener('keydown', function(e) {
+        if(e.keyCode === 32 && e.target === document.body) {
+            e.preventDefault();
+        }
+    });
 };
 
 // This is the draw function, make sure to setup proper drawing environment, and more
@@ -93,44 +111,61 @@ TurretLevel.prototype.draw = function () {
 
     // Gabe: draw BVH
     //this.BoundingVolumeManager.getHeadNode().draw(this.mCamera);
-    for (var i = 0; i < this.BoundingVolumeManager.getHierarchyArray().length; i++) {
+    for (var i = 0; this.drawNodes && i < this.BoundingVolumeManager.getHierarchyArray().length; i++) {
         this.BoundingVolumeManager.getHierarchyArray()[i].draw(this.mCamera);
     }
 
     //this.wall.draw(this.mCamera);
     // Gabe: draw all walls
-    for (var i = 0; i < this.gOsArray.length; i++) {
+    for (var i = 0; this.gOsArray[i] !== null && i < this.gOsArray.length; i++) {
         this.gOsArray[i].draw(this.mCamera);
     }
 
     this.turret.draw(this.mCamera);
-    if (this.gOInterceptedArray !== null) {
-        this.raycast.setRayColor([1, 0, 0, 1]);
-    } else {
-        this.raycast.setRayColor([0, 1, 0, 1]);
-    }
     this.raycast.draw(this.mCamera);
+    this.textDisplay.draw(this.mCamera);
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 TurretLevel.prototype.update = function () {
+    this.textDisplay.setText("HIDE: Turret Shoots in " + this.secondsCountDown);
+    this.frameCounter++;
+    if (this.frameCounter % 60 === 0) {
+        this.frameCounter = 0;
+        this.secondsCountDown--;
+    }
+    
+    
+    
     this.player.update();
     this.lookAt(this.player.getXform(), this.turret.getXform());
     this.turret.update();
     //this.raycastBound.update();
     //this.raycastHitting = this.raycastBound.checkIntersection(this.raycast);
     this.raycast.setEndPoint(this.player.getXform().getPosition());
-    for (var i = 0; i < this.gOsArray.length; i++) {
+    for (var i = 0; this.gOsArray[i] !== null && i < this.gOsArray.length; i++) {
         this.gOsArray[i].setColor([0, 0, 1, 1]);
     }
     this.gOInterceptedArray = this.raycast.update(this.mHeadNode);
     if (this.gOInterceptedArray !== null) {
+        this.raycast.setRayColor([1, 0, 0, 1]);
         for (var i = 0; i < this.gOInterceptedArray.length; i++) {
             this.gOInterceptedArray[i].setColor([1, 0, 0, 1]);
         }
+    } if (this.gOInterceptedArray !== null && this.gOInterceptedArray.length === 0) { 
+        this.raycast.setRayColor([1, 0, 0, 1]); 
     }
-
+    if (gEngine.Input.isKeyClicked(gEngine.Input.keys.E)) {
+        this.drawNodes = !this.drawNodes;
+    }
+    
+    if (this.secondsCountDown < 0) {
+        this.secondsCountDown = 6;
+        if (this.gOInterceptedArray === null || this.gOInterceptedArray.length === 0) {
+            
+        }
+    }
 };
 
 TurretLevel.prototype.lookAt = function (target, looker) {
